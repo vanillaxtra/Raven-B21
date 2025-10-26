@@ -1,57 +1,57 @@
-# Guide de contribution à Raven bS++
+# Raven bS++ Contributing Guide
 
-Merci de votre intérêt pour contribuer au projet Raven bS++! Ce document fournit des lignes directrices pour contribuer au projet.
+Thank you for your interest in contributing to the Raven bS++ project! This document provides guidelines for contributing to the project.
 
-## Processus de contribution
+## Contribution Process
 
-1. Forkez le projet
-2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
-3. Committez vos changements (`git commit -m 'Add some amazing feature'`)
-4. Poussez vers la branche (`git push origin feature/amazing-feature`)
-5. Ouvrez une Pull Request
+1. Fork the project
+2. Create a branch for your feature (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## Versionnement
+## Versioning
 
-Nous utilisons le [versionnement sémantique](https://semver.org/) avec le format MAJOR.MINOR.PATCH:
+We use [semantic versioning](https://semver.org/) with the MAJOR.MINOR.PATCH format:
 
-- **MAJOR**: changements incompatibles avec les versions précédentes
-- **MINOR**: ajout de fonctionnalités rétrocompatibles
-- **PATCH**: corrections de bugs rétrocompatibles
+- **MAJOR**: changes incompatible with previous versions
+- **MINOR**: addition of backward-compatible features
+- **PATCH**: backward-compatible bug fixes
 
-La version actuelle du mod est **1.5.3**.
+The current version of the mod is **1.5.3**.
 
-### Mise à jour de la version
+### Updating the Version
 
-Lors de la mise à jour de la version, veuillez modifier les fichiers suivants:
+When updating the version, please modify the following files:
 
-1. `gradle.properties`: Mettez à jour la propriété `version`
-2. `README.md`: Mettez à jour la version mentionnée dans la section Description
-3. `CONTRIBUTING.md`: Mettez à jour la version actuelle mentionnée dans ce fichier
+1. `gradle.properties`: Update the `version` property
+2. `README.md`: Update the version mentioned in the Description section
+3. `CONTRIBUTING.md`: Update the current version mentioned in this file
 
-## Style de code
+## Code Style
 
-- Utilisez des noms de variables et de méthodes descriptifs
-- Commentez votre code lorsque nécessaire
-- Suivez les conventions de nommage Java standard
-- Testez vos modifications avant de soumettre une PR
+- Use descriptive variable and method names
+- Comment your code when necessary
+- Follow standard Java naming conventions
+- Test your changes before submitting a PR
 
-## Processus de build
+## Build Process
 
-Pour compiler le projet localement:
+To compile the project locally:
 
 ```bash
 ./gradlew build --no-daemon
 ```
 
-Les fichiers JAR compilés seront disponibles dans le dossier `build/libs/`.
+The compiled JAR files will be available in the `build/libs/` folder.
 
-## Création d'une release
+## Creating a Release
 
-Les releases sont automatiquement créées lorsqu'un tag avec le format `vX.Y.Z` est poussé vers le dépôt. Par exemple:
+Releases are automatically created when a tag with the format `vX.Y.Z` is pushed to the repository. For example:
 
 ```bash
 git tag v1.5.3
 git push origin v1.5.3
 ```
 
-Cela déclenchera le workflow GitHub Actions qui compilera le projet et créera une release avec le fichier JAR.
+This will trigger the GitHub Actions workflow that will compile the project and create a release with the JAR file.
