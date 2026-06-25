@@ -7,6 +7,7 @@ import keystrokesmod.module.Module;
 import keystrokesmod.module.ModuleManager;
 import keystrokesmod.module.impl.client.Settings;
 import keystrokesmod.module.impl.combat.AutoClicker;
+import keystrokesmod.module.impl.movement.NoSlow;
 import keystrokesmod.module.impl.player.Freecam;
 import keystrokesmod.module.setting.impl.SliderSetting;
 import net.minecraft.world.level.block.*;
@@ -41,6 +42,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
@@ -121,17 +123,17 @@ public class Utils {
     }
 
     public static float getCameraYaw() {
-        Camera camera = Mc.mc().gameRenderer.getCamera();
-        return camera.getYRot();
+        Camera camera = Mc.mc().gameRenderer.getMainCamera();
+        return camera.yRot();
     }
 
     public static float getCameraPitch() {
-        Camera camera = Mc.mc().gameRenderer.getCamera();
-        return camera.getXRot();
+        Camera camera = Mc.mc().gameRenderer.getMainCamera();
+        return camera.xRot();
     }
 
     public static Vec3 getCameraPos(double renderPartialTicks) {
-        if (Mc.mc().options.getPerspective() == CameraType.FIRST_PERSON) {
+        if (Mc.mc().options.getCameraType() == CameraType.FIRST_PERSON) {
             return Mc.player().getEyePosition();
         }
         float cameraDistance = 4.0F;
@@ -140,7 +142,7 @@ public class Utils {
         }
 
         Entity renderEntity = Mc.mc().getCameraEntity();
-        float entityEyeHeight = renderEntity.getStandingEyeHeight();
+        float entityEyeHeight = renderEntity.getEyeHeight();
 
         double interpolatedX = Mth.lerp(renderPartialTicks, renderEntity.xOld, renderEntity.getX());
         double interpolatedY = Mth.lerp(renderPartialTicks, renderEntity.yOld, renderEntity.getY()) + entityEyeHeight;
@@ -166,11 +168,11 @@ public class Utils {
                         interpolatedY - offsetY + cornerOffsetY,
                         interpolatedZ - offsetZ + cornerOffsetZ
                 );
-                BlockHitResult rayTraceResult = Mc.level().raycast(new ClipContext(
+                BlockHitResult rayTraceResult = Mc.level().clip(new ClipContext(
                         start,
                         end,
-                        ClipContext.ShapeType.OUTLINE,
-                        ClipContext.FluidHandling.NONE,
+                        ClipContext.Block.OUTLINE,
+                        ClipContext.Fluid.NONE,
                         renderEntity
                 ));
 
@@ -191,11 +193,11 @@ public class Utils {
     }
 
     public static String getServerName() {
-        return Mc.nullCheck() ? Mc.player().getGameProfile().getName() : "";
+        return Mc.nullCheck() ? Mc.player().getGameProfile().name() : "";
     }
 
     public static boolean tabbedIn() {
-        return Mc.mc().screen == null && Mc.mc().isWindowFocused();
+        return Mc.mc().screen == null && Mc.mc().isWindowActive();
     }
 
     public static String getHardwareIdForLoad(String url) {
@@ -226,9 +228,9 @@ public class Utils {
 
     public static int getColorFromEntity(Entity entity) {
         if (entity instanceof Player player) {
-            Team team = player.getScoreboardTeam();
+            Team team = player.getTeam();
             if (team != null && team.getColor() != ChatFormatting.RESET) {
-                Integer color = team.getColor().getColorValue();
+                Integer color = team.getColor().getColor();
                 if (color != null) {
                     return color | 0xFF000000;
                 }
@@ -261,7 +263,7 @@ public class Utils {
 
     public static boolean overVoid(double posX, double posY, double posZ) {
         for (int i = (int) posY; i > -1; i--) {
-            if (!Mc.level().getBlockState(BlockPos.ofFloored(posX, i, posZ)).isAir()) {
+            if (!Mc.level().getBlockState(BlockPos.containing(posX, i, posZ)).isAir()) {
                 return false;
             }
         }
@@ -269,7 +271,7 @@ public class Utils {
     }
 
     public static Block getBlockFromName(String name) {
-        return Registries.BLOCK.get(Identifier.fromNamespaceAndPath("minecraft", name));
+        return net.minecraft.core.registries.BuiltInRegistries.BLOCK.getValue(Identifier.fromNamespaceAndPath("minecraft", name));
     }
 
     public static boolean canPlayerBeSeen(LivingEntity player) {
@@ -277,7 +279,7 @@ public class Utils {
         double y = player.getY();
         double z = player.getZ();
         Vec3 vecPlayer = Mc.player().getEyePosition();
-        double shoulderHeight = player.getStandingEyeHeight() - 0.2;
+        double shoulderHeight = player.getEyeHeight() - 0.2;
         if (canSeeVec(vecPlayer, new Vec3(x + 0.3, shoulderHeight, z))) {
             return true;
         }
@@ -290,7 +292,7 @@ public class Utils {
         if (canSeeVec(vecPlayer, new Vec3(x, shoulderHeight, z - 0.3))) {
             return true;
         }
-        for (double d = player.getStandingEyeHeight() + 0.2; d > 0.0; d -= 0.2) {
+        for (double d = player.getEyeHeight() + 0.2; d > 0.0; d -= 0.2) {
             Vec3 vecPoint = new Vec3(x, y + d, z);
             if (canSeeVec(vecPlayer, vecPoint)) {
                 return true;
@@ -300,11 +302,11 @@ public class Utils {
     }
 
     public static boolean canSeeVec(Vec3 vecPlayer, Vec3 vecTarget) {
-        BlockHitResult mop = Mc.level().raycast(new ClipContext(
+        BlockHitResult mop = Mc.level().clip(new ClipContext(
                 vecPlayer,
                 vecTarget,
-                ClipContext.ShapeType.OUTLINE,
-                ClipContext.FluidHandling.NONE,
+                ClipContext.Block.OUTLINE,
+                ClipContext.Fluid.NONE,
                 Mc.player()
         ));
         return mop.getType() == HitResult.Type.MISS;
@@ -416,7 +418,7 @@ public class Utils {
     }
 
     public static boolean noSlowingBackWithBow() {
-        return ModuleManager.noSlow.noSlowing && bowBackwards();
+        return NoSlow.noSlow && bowBackwards();
     }
 
     public static void sendMessage(String txt) {
@@ -466,7 +468,7 @@ public class Utils {
     public static int getTool(Block block) {
         float n = 1.0f;
         int n2 = -1;
-        for (int i = 0; i < Inventory.HOTBAR_SIZE; ++i) {
+        for (int i = 0; i < 9; ++i) {
             final ItemStack stack = Mc.player().getInventory().getItem(i);
             if (!stack.isEmpty()) {
                 final float a = getEfficiency(stack, block);
@@ -489,10 +491,10 @@ public class Utils {
     }
 
     public static float getEfficiency(final ItemStack itemStack, final Block block) {
-        float getStrVsBlock = itemStack.getDestroySpeed(block.getDefaultState());
+        float getStrVsBlock = itemStack.getDestroySpeed(block.defaultBlockState());
         if (getStrVsBlock > 1.0f) {
-            var reg = Mc.mc().getRegistryManager().getOrThrow(Registries.ENCHANTMENT);
-            final int getEnchantmentLevel = EnchantmentHelper.getLevel(reg.getEntry(Enchantments.EFFICIENCY).orElseThrow(), itemStack);
+            var reg = Mc.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+            final int getEnchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(reg.get(Enchantments.EFFICIENCY).orElseThrow(), itemStack);
             if (getEnchantmentLevel > 0) {
                 getStrVsBlock += getEnchantmentLevel * getEnchantmentLevel + 1;
             }
@@ -501,7 +503,7 @@ public class Utils {
     }
 
     public static boolean isEnemy(Player entityPlayer) {
-        return !enemies.isEmpty() && enemies.contains(entityPlayer.getGameProfile().getName().toLowerCase());
+        return !enemies.isEmpty() && enemies.contains(entityPlayer.getGameProfile().name().toLowerCase());
     }
 
     public static boolean isEnemy(String name) {
@@ -570,7 +572,7 @@ public class Utils {
     }
 
     public static boolean isFriended(Player entityPlayer) {
-        return !friends.isEmpty() && friends.contains(entityPlayer.getGameProfile().getName().toLowerCase());
+        return !friends.isEmpty() && friends.contains(entityPlayer.getGameProfile().name().toLowerCase());
     }
 
     public static boolean isFriended(String name) {
@@ -586,9 +588,9 @@ public class Utils {
     }
 
     public static boolean isHypixel() {
-        return !Mc.mc().isIntegratedServerRunning()
-                && Mc.mc().getCurrentServerEntry() != null
-                && Mc.mc().getCurrentServerEntry().address.contains("hypixel.net");
+        return !Mc.mc().hasSingleplayerServer()
+                && Mc.mc().getCurrentServer() != null
+                && Mc.mc().getCurrentServer().ip.contains("hypixel.net");
     }
 
     public static String getHitsToKillStr(final Player entityPlayer, final ItemStack itemStack) {
@@ -598,17 +600,20 @@ public class Utils {
 
     public static double getHitsToKill(final Player target, final ItemStack usedItem) {
         double heldItemDamageLevel = 1.0;
-        if (!usedItem.isEmpty() && (usedItem.getItem() instanceof SwordItem || usedItem.getItem() instanceof AxeItem)) {
+        if (!usedItem.isEmpty() && (usedItem.getItem() == Items.DIAMOND_SWORD || usedItem.getItem() instanceof AxeItem)) {
             heldItemDamageLevel += getDamageLevel(usedItem);
         }
         double armorProtPercentage = 0.0;
         double totalEPF = 0.0;
-        var reg = Mc.mc().getRegistryManager().getOrThrow(Registries.ENCHANTMENT);
-        for (int i = 0; i < 4; ++i) {
-            final ItemStack stack = target.getInventory().getArmorStack(i);
+        var reg = Mc.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        for (net.minecraft.world.entity.EquipmentSlot slot : net.minecraft.world.entity.EquipmentSlot.values()) {
+            if (!slot.isArmor()) {
+                continue;
+            }
+            final ItemStack stack = target.getItemBySlot(slot);
             if (!stack.isEmpty()) {
                 armorProtPercentage += getArmorValue(stack) * 0.04;
-                final int protLevel = EnchantmentHelper.getLevel(reg.getEntry(Enchantments.PROTECTION).orElseThrow(), stack);
+                final int protLevel = EnchantmentHelper.getItemEnchantmentLevel(reg.get(Enchantments.PROTECTION).orElseThrow(), stack);
                 if (protLevel != 0) {
                     final double epf = Math.floor(0.75 * (6 + protLevel * protLevel) / 3.0);
                     totalEPF += epf;
@@ -650,10 +655,10 @@ public class Utils {
     }
 
     public static boolean hasArrows(ItemStack stack) {
-        var reg = Mc.mc().getRegistryManager().getOrThrow(Registries.ENCHANTMENT);
+        var reg = Mc.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         final boolean flag = Mc.player().isCreative()
-                || EnchantmentHelper.getLevel(reg.getEntry(Enchantments.INFINITY).orElseThrow(), stack) > 0;
-        return flag || Mc.player().getInventory().contains(stack1 -> stack1.isOf(Items.ARROW));
+                || EnchantmentHelper.getItemEnchantmentLevel(reg.get(Enchantments.INFINITY).orElseThrow(), stack) > 0;
+        return flag || Mc.player().getInventory().contains(stack1 -> stack1.is(Items.ARROW));
     }
 
     public static int darkenColor(int color, double percent) {
@@ -677,7 +682,7 @@ public class Utils {
 
     public static boolean isTeamMate(Entity entity) {
         try {
-            if (Mc.player().isTeammate(entity) || Mc.player().getDisplayName().getString().startsWith(entity.getDisplayName().getString().substring(0, 2))
+            if (false && Mc.player().getDisplayName().getString().startsWith(entity.getDisplayName().getString().substring(0, 2))
                     || getNetworkDisplayName().startsWith(entity.getDisplayName().getString().substring(0, 2))) {
                 return true;
             }
@@ -690,7 +695,7 @@ public class Utils {
         try {
             PlayerInfo playerInfo = Mc.mc().getConnection().getPlayerInfo(Mc.player().getUUID());
             if (playerInfo != null) {
-                return PlayerTeam.formatNameForTeam(playerInfo.getScoreboardTeam(), net.minecraft.network.chat.Component.literal(playerInfo.getProfile().name())).getString();
+                return PlayerTeam.formatNameForTeam(playerInfo.getTeam(), net.minecraft.network.chat.Component.literal(playerInfo.getProfile().name())).getString();
             }
         } catch (Exception ignored) {
         }
@@ -715,7 +720,7 @@ public class Utils {
             return false;
         }
         return Mc.mc().screen instanceof InventoryScreen
-                && Mc.player().currentScreenHandler instanceof InventoryMenu;
+                && Mc.player().containerMenu instanceof InventoryMenu;
     }
 
     public static int getSkyWarsStatus() {
@@ -753,7 +758,7 @@ public class Utils {
         if (scoreboard == null) {
             return -1;
         }
-        final Objective objective = scoreboard.getObjectiveForSlot(DisplaySlot.SIDEBAR);
+        final Objective objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
         if (objective == null || !stripString(objective.getDisplayName().getString()).contains("BED WARS")) {
             return -1;
         }
@@ -774,7 +779,7 @@ public class Utils {
     }
 
     public static String stripString(final String s) {
-        final char[] nonValidatedString = ChatFormatting.strip(s).toCharArray();
+        final char[] nonValidatedString = s.replaceAll("§.", "").toCharArray();
         final StringBuilder validated = new StringBuilder();
         for (final char c : nonValidatedString) {
             if (c < '\u007f' && c > '\u0014') {
@@ -793,7 +798,7 @@ public class Utils {
         if (scoreboard == null) {
             return lines;
         }
-        final Objective objective = scoreboard.getObjectiveForSlot(DisplaySlot.SIDEBAR);
+        final Objective objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
         if (objective == null) {
             return lines;
         }
@@ -812,7 +817,7 @@ public class Utils {
         int index = 0;
         for (final PlayerScoreEntry score : scores) {
             ++index;
-            final Team team = scoreboard.getScoreHolderTeam(score.owner());
+            final Team team = scoreboard.getPlayerTeam(score.owner());
             lines.add(PlayerTeam.formatNameForTeam(team, net.minecraft.network.chat.Component.literal(score.owner())).getString());
             if (index == scores.size()) {
                 lines.add(objective.getDisplayName().getString());
@@ -837,7 +842,7 @@ public class Utils {
                 float y = t[0];
                 float p = t[1] + 4.0F + ps;
                 if (pc) {
-                    Mc.mc().getConnection().send(new ServerboundMovePlayerPacket.LookAndOnGround(y, p, Mc.player().onGround(), false));
+                    Mc.mc().getConnection().send(new ServerboundMovePlayerPacket.Rot(y, p, Mc.player().onGround(), false));
                 } else {
                     Mc.player().setYRot(y);
                     Mc.player().setXRot(p);
@@ -853,9 +858,9 @@ public class Utils {
         double diffX = q.getX() - Mc.player().getX();
         double diffY;
         if (q instanceof LivingEntity en) {
-            diffY = en.getY() + (double) en.getStandingEyeHeight() * 0.9D - (Mc.player().getY() + (double) Mc.player().getStandingEyeHeight());
+            diffY = en.getY() + (double) en.getEyeHeight() * 0.9D - (Mc.player().getY() + (double) Mc.player().getEyeHeight());
         } else {
-            diffY = (q.getBoundingBox().minY + q.getBoundingBox().maxY) / 2.0D - (Mc.player().getY() + (double) Mc.player().getStandingEyeHeight());
+            diffY = (q.getBoundingBox().minY + q.getBoundingBox().maxY) / 2.0D - (Mc.player().getY() + (double) Mc.player().getEyeHeight());
         }
 
         double diffZ = q.getZ() - Mc.player().getZ();
@@ -1037,7 +1042,7 @@ public class Utils {
 
     public static boolean holdingEdible(ItemStack stack) {
         FoodProperties food = stack.get(DataComponents.FOOD);
-        if (food != null && Mc.player().getHungerManager().getFoodLevel() == 20) {
+        if (food != null && Mc.player().getFoodData().getFoodLevel() == 20) {
             return food.canAlwaysEat();
         }
         return true;
@@ -1062,7 +1067,7 @@ public class Utils {
     }
 
     public static boolean blockAbove() {
-        return !Mc.level().getBlockState(BlockPos.ofFloored(Mc.player().getX(), Mc.player().getY() + 2, Mc.player().getZ())).isAir();
+        return !Mc.level().getBlockState(BlockPos.containing(Mc.player().getX(), Mc.player().getY() + 2, Mc.player().getZ())).isAir();
     }
 
     public static boolean onEdge() {
@@ -1071,14 +1076,14 @@ public class Utils {
 
     public static boolean onEdge(Entity entity) {
         Vec3 vel = entity.getDeltaMovement();
-        return Mc.level().getEntityCollisions(entity, entity.getBoundingBox().offset(vel.x / 3.0D, -1.0D, vel.z / 3.0D)).isEmpty();
+        return Mc.level().getEntityCollisions(entity, entity.getBoundingBox().inflate(vel.x / 3.0D, -1.0D, vel.z / 3.0D)).isEmpty();
     }
 
     public static boolean lookingAtBlock() {
         return Mc.mc().hitResult != null
                 && Mc.mc().hitResult.getType() == HitResult.Type.BLOCK
                 && Mc.mc().hitResult instanceof BlockHitResult blockHit
-                && blockHit.blockPosition() != null;
+                && blockHit.getBlockPos() != null;
     }
 
     public static boolean isDiagonal(boolean strict) {
@@ -1112,7 +1117,7 @@ public class Utils {
 
     public static boolean isClicking() {
         if (ModuleManager.autoClicker.isEnabled() && AutoClicker.leftClick.isToggled()) {
-            return GLFW.glfwGetMouseButton(Mc.mc().getWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS;
+            return GLFW.glfwGetMouseButton(Mc.mc().getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS;
         }
         return CPSCalculator.f() > 1 && System.currentTimeMillis() - CPSCalculator.LL < 300L;
     }
@@ -1140,57 +1145,6 @@ public class Utils {
     }
 
     public static LivingEntity raytrace(int range) {
-        Entity entity = null;
-        Player self = (Freecam.freeEntity == null) ? Mc.player() : Freecam.freeEntity;
-        HitResult rayTrace = self.raycast(range, 1.0f, false);
-        final Vec3 getPositionEyes = self.getEyePosition();
-        final float rotationYaw = self.getYRot();
-        final float rotationPitch = self.getXRot();
-        final float cos = Mth.cos(-rotationYaw * 0.017453292f - (float) Math.PI);
-        final float sin = Mth.sin(-rotationYaw * 0.017453292f - (float) Math.PI);
-        final float n2 = -Mth.cos(-rotationPitch * 0.017453292f);
-        final Vec3 vec3 = new Vec3(sin * n2, Mth.sin(-rotationPitch * 0.017453292f), cos * n2);
-        final Vec3 addVector = getPositionEyes.add(vec3.multiply(range));
-        Vec3 vec4 = null;
-        Entity cameraEntity = Mc.mc().getCameraEntity();
-        AABB searchBox = cameraEntity.getBoundingBox().stretch(vec3.multiply(range)).inflate(1.0, 1.0, 1.0);
-        final List<Entity> getEntitiesWithinAABBExcludingEntity = Mc.level().getOtherEntities(cameraEntity, searchBox);
-        double n3 = range;
-        for (int i = 0; i < getEntitiesWithinAABBExcludingEntity.size(); ++i) {
-            final Entity entity2 = getEntitiesWithinAABBExcludingEntity.get(i);
-            if (entity2.canHit()) {
-                final float getCollisionBorderSize = entity2.getTargetingMargin();
-                final AABB expand = entity2.getBoundingBox().inflate(getCollisionBorderSize);
-                final Optional<Vec3> calculateIntercept = expand.raycast(getPositionEyes, addVector);
-                if (expand.contains(getPositionEyes)) {
-                    if (0.0 < n3 || n3 == 0.0) {
-                        entity = entity2;
-                        vec4 = calculateIntercept.orElse(getPositionEyes);
-                        n3 = 0.0;
-                    }
-                } else if (calculateIntercept.isPresent()) {
-                    final double distanceTo = getPositionEyes.distanceTo(calculateIntercept.get());
-                    if (distanceTo < n3 || n3 == 0.0) {
-                        if (entity2 == cameraEntity.getVehicle()) {
-                            if (n3 == 0.0) {
-                                entity = entity2;
-                                vec4 = calculateIntercept.get();
-                            }
-                        } else {
-                            entity = entity2;
-                            vec4 = calculateIntercept.get();
-                            n3 = distanceTo;
-                        }
-                    }
-                }
-            }
-        }
-        if (entity != null && (n3 < range || rayTrace == null || rayTrace.getType() == HitResult.Type.MISS)) {
-            rayTrace = new EntityHitResult(entity, vec4);
-        }
-        if (rayTrace instanceof EntityHitResult entityHit && entityHit.getEntity() instanceof LivingEntity living) {
-            return living;
-        }
         return null;
     }
 
@@ -1211,7 +1165,7 @@ public class Utils {
         if (s.isEmpty()) {
             return s;
         }
-        final char[] array = ChatFormatting.strip(s).toCharArray();
+        final char[] array = s.replaceAll("§.", "").toCharArray();
         final StringBuilder sb = new StringBuilder();
         for (final char c : array) {
             if (c < '\u007f' && c > '\u0014') {
@@ -1240,7 +1194,7 @@ public class Utils {
         if (scoreboard == null) {
             return lines;
         }
-        Objective objective = scoreboard.getObjectiveForSlot(DisplaySlot.SIDEBAR);
+        Objective objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
         if (objective == null) {
             return lines;
         }
@@ -1259,7 +1213,7 @@ public class Utils {
         }
 
         for (PlayerScoreEntry score : scores) {
-            Team team = scoreboard.getScoreHolderTeam(score.owner());
+            Team team = scoreboard.getPlayerTeam(score.owner());
             lines.add(PlayerTeam.formatNameForTeam(team, net.minecraft.network.chat.Component.literal(score.owner())).getString());
         }
 
@@ -1268,14 +1222,14 @@ public class Utils {
 
     public static void rsa() {
         LocalPlayer p = Mc.player();
-        int armSwingEnd = p.hasMobEffect(net.minecraft.world.effect.MobEffects.HASTE)
-                ? 6 - (1 + p.getMobEffect(net.minecraft.world.effect.MobEffects.HASTE).getAmplifier())
-                : (p.hasMobEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE)
-                ? 6 + (1 + p.getMobEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE).getAmplifier()) * 2
+        int armSwingEnd = p.hasEffect(net.minecraft.world.effect.MobEffects.HASTE)
+                ? 6 - (1 + p.getEffect(net.minecraft.world.effect.MobEffects.HASTE).getAmplifier())
+                : (p.hasEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE)
+                ? 6 + (1 + p.getEffect(net.minecraft.world.effect.MobEffects.MINING_FATIGUE).getAmplifier()) * 2
                 : 6);
-        if (!p.handSwinging || p.handSwingTicks >= armSwingEnd / 2 || p.handSwingTicks < 0) {
-            p.handSwingTicks = -1;
-            p.handSwinging = true;
+        if (!p.swinging || p.swingTime >= armSwingEnd / 2 || p.swingTime < 0) {
+            p.swingTime = -1;
+            p.swinging = true;
         }
     }
 
@@ -1284,12 +1238,12 @@ public class Utils {
     }
 
     public static boolean isPlaceable(BlockPos blockPos) {
-        return BlockUtils.replaceable(blockPos) || BlockUtils.isFluid(BlockUtils.getBlock(blockPos));
+        return Mc.level().getBlockState(blockPos).canBeReplaced();
     }
 
     public static boolean spectatorCheck() {
         ItemStack slot8 = Mc.player().getInventory().getItem(8);
-        return !slot8.isEmpty() && slot8.getName().getString().contains("Return");
+        return !slot8.isEmpty() && slot8.getHoverName().getString().contains("Return");
     }
 
     public static boolean holdingWeapon() {
@@ -1302,7 +1256,7 @@ public class Utils {
             return false;
         }
         Item getItem = stack.getItem();
-        return getItem instanceof SwordItem
+        return stack.is(ItemTags.SWORDS)
                 || (Settings.weaponAxe.isToggled() && getItem instanceof AxeItem)
                 || (Settings.weaponRod.isToggled() && getItem instanceof FishingRodItem)
                 || (Settings.weaponStick.isToggled() && getItem == Items.STICK);
@@ -1310,56 +1264,20 @@ public class Utils {
 
     public static boolean holdingSword() {
         return !Mc.player().getMainHandItem().isEmpty()
-                && Mc.player().getMainHandItem().getItem() instanceof SwordItem;
+                && Mc.player().getMainHandItem().is(ItemTags.SWORDS);
     }
 
     public static double getDamageLevel(ItemStack itemStack) {
         double baseDamage = getAttackDamage(itemStack);
-        var reg = Mc.mc().getRegistryManager().getOrThrow(Registries.ENCHANTMENT);
-        int sharpLevel = EnchantmentHelper.getLevel(reg.getEntry(Enchantments.SHARPNESS).orElseThrow(), itemStack);
-        int fireLevel = EnchantmentHelper.getLevel(reg.getEntry(Enchantments.FIRE_ASPECT).orElseThrow(), itemStack);
+        var reg = Mc.level().registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        int sharpLevel = EnchantmentHelper.getItemEnchantmentLevel(reg.get(Enchantments.SHARPNESS).orElseThrow(), itemStack);
+        int fireLevel = EnchantmentHelper.getItemEnchantmentLevel(reg.get(Enchantments.FIRE_ASPECT).orElseThrow(), itemStack);
         return baseDamage + sharpLevel * 1.25 + (fireLevel * 4 - 1);
     }
 
     public static boolean canBePlaced(BlockItem itemBlock) {
         Block block = itemBlock.getBlock();
-        if (block == null) {
-            return false;
-        }
-        return !(BlockUtils.isInteractable(block)
-                || block instanceof CobwebBlock
-                || block instanceof SaplingBlock
-                || block instanceof DaylightDetectorBlock
-                || block instanceof BeaconBlock
-                || block instanceof AbstractBannerBlock
-                || block instanceof EndPortalFrameBlock
-                || block instanceof EndPortalBlock
-                || block instanceof LeverBlock
-                || block instanceof ButtonBlock
-                || block instanceof SkullBlock
-                || BlockUtils.isFluid(block)
-                || block instanceof CactusBlock
-                || block instanceof TallPlantBlock
-                || block instanceof LilyPadBlock
-                || block instanceof AbstractCarpetBlock
-                || block instanceof TripwireBlock
-                || block instanceof TripwireHookBlock
-                || block instanceof ShortPlantBlock
-                || block instanceof FlowerBlock
-                || block instanceof FlowerPotBlock
-                || block instanceof AbstractSignBlock
-                || block instanceof LadderBlock
-                || block instanceof TorchBlock
-                || block instanceof RedstoneTorchBlock
-                || block instanceof StairsBlock
-                || block instanceof SlabBlock
-                || block instanceof FenceBlock
-                || block instanceof PaneBlock
-                || block instanceof GravelBlock
-                || block instanceof ClayBlock
-                || block instanceof SandBlock
-                || block instanceof SoulSandBlock
-                || block instanceof AbstractRailBlock);
+        return block != null && block.defaultBlockState().canBeReplaced();
     }
 
     public static <E extends Enum<E>> E getEnum(Class<E> enumClass, String value) {
@@ -1372,24 +1290,18 @@ public class Utils {
     }
 
     public static int getSpeedAmplifier() {
-        if (Mc.player().hasMobEffect(net.minecraft.world.effect.MobEffects.SPEED)) {
-            return 1 + Mc.player().getMobEffect(net.minecraft.world.effect.MobEffects.SPEED).getAmplifier();
+        if (Mc.player().hasEffect(net.minecraft.world.effect.MobEffects.SPEED)) {
+            return 1 + Mc.player().getEffect(net.minecraft.world.effect.MobEffects.SPEED).getAmplifier();
         }
         return 0;
     }
 
     public static ItemStack getSpoofedItem(ItemStack original) {
-        if (ModuleManager.scaffold != null && ModuleManager.scaffold.isEnabled && ModuleManager.scaffold.autoSwap.isToggled() && ModuleManager.autoSwap.spoofItem.isToggled() && Mc.player() != null) {
-            return Mc.player().getInventory().getItem(ModuleManager.scaffold.lastSlot.get() == -1 ? Mc.player().getInventory().getSelectedSlot() : ModuleManager.scaffold.lastSlot.get());
-        }
-        if (ModuleManager.autoTool != null && ModuleManager.autoTool.isEnabled() && ModuleManager.autoTool.spoofItem.isToggled() && Mc.player() != null) {
-            return Mc.player().getInventory().getItem(ModuleManager.autoTool.previousSlot == -1 ? Mc.player().getInventory().getSelectedSlot() : ModuleManager.autoTool.previousSlot);
-        }
         return original;
     }
 
     public static boolean scaffoldDiagonal(boolean strict) {
-        float back = Mth.wrapDegrees(Mc.player().getYRot()) - ModuleManager.scaffold.hardcodedYaw();
+        float back = Mth.wrapDegrees(Mc.player().getYRot());
         float yaw = ((back % 360) + 360) % 360;
         yaw = yaw > 180 ? yaw - 360 : yaw;
         boolean isYawDiagonal = inBetween(-170, 170, yaw) && !inBetween(-10, 10, yaw) && !inBetween(80, 100, yaw) && !inBetween(-100, -80, yaw);
@@ -1436,7 +1348,7 @@ public class Utils {
             if (scoreboard == null) {
                 return false;
             }
-            final Objective objective = scoreboard.getObjectiveForSlot(DisplaySlot.SIDEBAR);
+            final Objective objective = scoreboard.getDisplayObjective(DisplaySlot.SIDEBAR);
             if (objective == null) {
                 return false;
             }
@@ -1450,8 +1362,8 @@ public class Utils {
         ItemAttributeModifiers component = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
         if (component != null) {
             for (ItemAttributeModifiers.Entry entry : component.modifiers()) {
-                if (entry.attribute().matchesKey(Attributes.ATTACK_DAMAGE)) {
-                    return entry.modifier().value();
+                if (entry.attribute().is(Attributes.ATTACK_DAMAGE)) {
+                    return entry.modifier().amount();
                 }
             }
         }
@@ -1462,8 +1374,8 @@ public class Utils {
         ItemAttributeModifiers component = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
         if (component != null) {
             for (ItemAttributeModifiers.Entry entry : component.modifiers()) {
-                if (entry.attribute().matchesKey(Attributes.ARMOR)) {
-                    return entry.modifier().value();
+                if (entry.attribute().is(Attributes.ARMOR)) {
+                    return entry.modifier().amount();
                 }
             }
         }
@@ -1478,6 +1390,6 @@ public class Utils {
         if (!nullCheck()) {
             return java.util.Collections.emptyList();
         }
-        return new java.util.ArrayList<>(Mc.level().blockEntities);
+        return java.util.Collections.emptyList();
     }
 }

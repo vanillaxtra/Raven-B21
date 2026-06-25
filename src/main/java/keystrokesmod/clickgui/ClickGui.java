@@ -129,7 +129,7 @@ public class ClickGui extends Screen {
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (Gui.backgroundBlur.getInput() != 0) {
             BlurUtils.prepareBlur();
-            RoundedUtils.drawRound(0, 0, this.width, this.height, 0.0f, true, Color.black);
+            RoundedUtils.drawRound(0, 0, this.width, this.height, 0.0f, Color.black);
             float inputToRange = (float) (3 * ((Gui.backgroundBlur.getInput() + 35) / 100));
             BlurUtils.blurEnd(2, this.blurSmooth.getValueFloat(0, inputToRange, 1));
         }

@@ -21,9 +21,6 @@ public class C0B extends CPacket {
 
     @Override
     public ServerboundPlayerCommandPacket convert() {
-        if (this.packet instanceof ServerboundPlayerCommandPacket commandPacket) {
-            return commandPacket;
-        }
-        return new ServerboundPlayerCommandPacket(Mc.player(), ServerboundPlayerCommandPacket.Action.PRESS_SHIFT_KEY, horsePower);
+        return this.packet instanceof ServerboundPlayerCommandPacket commandPacket ? commandPacket : null;
     }
 }

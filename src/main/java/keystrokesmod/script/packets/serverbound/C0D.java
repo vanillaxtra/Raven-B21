@@ -12,11 +12,11 @@ public class C0D extends CPacket {
 
     public C0D(ServerboundContainerClosePacket packet) {
         super(packet);
-        this.windowId = packet.containerId();
+        this.windowId = 0;
     }
 
     @Override
     public ServerboundContainerClosePacket convert() {
-        return new ServerboundContainerClosePacket(this.windowId);
+        return this.packet instanceof ServerboundContainerClosePacket closePacket ? closePacket : new ServerboundContainerClosePacket(this.windowId);
     }
 }

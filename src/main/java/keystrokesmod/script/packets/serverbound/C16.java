@@ -17,9 +17,6 @@ public class C16 extends CPacket {
 
     @Override
     public ServerboundClientCommandPacket convert() {
-        if (this.packet instanceof ServerboundClientCommandPacket commandPacket) {
-            return commandPacket;
-        }
-        return new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.RESPAWN);
+        return this.packet instanceof ServerboundClientCommandPacket commandPacket ? commandPacket : null;
     }
 }

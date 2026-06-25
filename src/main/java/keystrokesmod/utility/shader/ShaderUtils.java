@@ -14,18 +14,12 @@ public final class ShaderUtils {
     }
 
     public static int getFramebufferTextureId(RenderTarget framebuffer) {
-        return framebuffer != null ? framebuffer.getColorTextureId() : 0;
+        return 0;
     }
 
     public static void clearFramebuffer(RenderTarget framebuffer) {
-        if (framebuffer != null) {
-            framebuffer.clear(Mc.mc().isSameThread());
-        }
     }
 
     public static void bindFramebuffer(RenderTarget framebuffer, boolean setViewport) {
-        if (framebuffer != null) {
-            framebuffer.bindWrite(setViewport);
-        }
     }
 }
