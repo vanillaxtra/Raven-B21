@@ -1,10 +1,8 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-public class StrafeEvent extends Event {
-    private float forward;
+public class StrafeEvent {
     private float strafe;
+    private float forward;
     private float friction;
     private float yaw;
 

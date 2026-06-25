@@ -3,13 +3,14 @@ package keystrokesmod.clickgui.components.impl;
 import keystrokesmod.Raven;
 import keystrokesmod.clickgui.components.Component;
 import keystrokesmod.module.Module;
-import keystrokesmod.module.ModuleManager;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.RenderUtils;
 import keystrokesmod.utility.Utils;
 import keystrokesmod.utility.profile.ProfileModule;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
+import keystrokesmod.module.ModuleManager;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.ChatFormatting;
 
 import java.awt.*;
 import java.math.BigDecimal;
@@ -36,51 +37,57 @@ public class SliderComponent extends Component {
         this.o = o;
 
         double initial = (sliderSetting.getInput() == -1 && sliderSetting.canBeDisabled) ? -1 : sliderSetting.getInput();
-
         this.targetValue = initial;
         this.displayedValue = initial;
-        this.width = this.sliderSetting.getInput() == -1 ? 0 : (double) (this.moduleComponent.categoryComponent.getWidth() - 8) * (this.sliderSetting.getInput() - this.sliderSetting.getMin()) / (this.sliderSetting.getMax() - this.sliderSetting.getMin());
+        this.width = this.sliderSetting.getInput() == -1 ? 0
+                : (double) (this.moduleComponent.categoryComponent.getWidth() - 8) * (this.sliderSetting.getInput() - this.sliderSetting.getMin()) / (this.sliderSetting.getMax() - this.sliderSetting.getMin());
     }
 
     @Override
-    public void render() {
-        RenderUtils.drawRoundedRectangle(this.moduleComponent.categoryComponent.getX() + 4 + (xOffset / 2), this.moduleComponent.categoryComponent.getY() + this.o + 11, this.moduleComponent.categoryComponent.getX() + 4 + this.moduleComponent.categoryComponent.getWidth() - 8, this.moduleComponent.categoryComponent.getY() + this.o + 15, 4, -12302777);
+    public void render(GuiGraphics context) {
+        var textRenderer = Mc.mc().font;
+        RenderUtils.drawRoundedRectangle(this.moduleComponent.categoryComponent.getX() + 4 + (xOffset / 2),
+                this.moduleComponent.categoryComponent.getY() + this.o + 11,
+                this.moduleComponent.categoryComponent.getX() + 4 + this.moduleComponent.categoryComponent.getWidth() - 8,
+                this.moduleComponent.categoryComponent.getY() + this.o + 15, 4, -12302777);
         int left = this.moduleComponent.categoryComponent.getX() + 4 + (xOffset / 2);
         int right = left + (int) this.width;
-
         if (right - left > 84) {
             right = left + 84;
         }
+        RenderUtils.drawRoundedRectangle(left, this.moduleComponent.categoryComponent.getY() + this.o + 11, right,
+                this.moduleComponent.categoryComponent.getY() + this.o + 15, 4,
+                Color.getHSBColor((float) (System.currentTimeMillis() % 11000L) / 11000.0F, 0.75F, 0.9F).getRGB());
 
-        RenderUtils.drawRoundedRectangle(left, this.moduleComponent.categoryComponent.getY() + this.o + 11, right, this.moduleComponent.categoryComponent.getY() + this.o + 15, 4, Color.getHSBColor((float) (System.currentTimeMillis() % 11000L) / 11000.0F, 0.75F, 0.9F).getRGB());
-
-        GL11.glPushMatrix();
-        GL11.glScaled(0.5, 0.5, 0.5);
+        context.pose().pushMatrix();
+        context.pose().scale(0.5f, 0.5f);
 
         double input = this.sliderSetting.getInput();
         String suffix = this.sliderSetting.getSuffix();
         String valueText;
 
         if (input == -1 && this.sliderSetting.canBeDisabled) {
-            valueText = "§cDisabled";
+            valueText = ChatFormatting.RED + "Disabled";
             suffix = "";
-        }
-        else {
-            if (input != 1 && (suffix.equals(" second") || suffix.equals(" block") || suffix.equals(" tick")) && this.moduleComponent.mod.moduleCategory() != Module.category.scripts) {
+        } else {
+            if (input != 1 && (suffix.equals(" second") || suffix.equals(" block") || suffix.equals(" tick"))
+                    && this.moduleComponent.mod.moduleCategory() != Module.category.scripts) {
                 suffix += "s";
             }
             if (this.sliderSetting.isString) {
                 int idx = (int) Math.round(input);
                 idx = Math.max(0, Math.min(idx, this.sliderSetting.getOptions().length - 1));
-                valueText = this.sliderSetting.getOptions()[idx];
-            }
-            else {
-                valueText = Utils.asWholeNum(input);
+                valueText = ChatFormatting.YELLOW + this.sliderSetting.getOptions()[idx];
+            } else {
+                valueText = ChatFormatting.AQUA + Utils.asWholeNum(input);
             }
         }
 
-        Minecraft.getMinecraft().fontRendererObj.drawStringWithShadow(this.sliderSetting.getName() + ": " + (this.sliderSetting.isString ? "§e" : "§b") + valueText + suffix, (float) ((this.moduleComponent.categoryComponent.getX() + 4) * 2) + xOffset, (float) ((this.moduleComponent.categoryComponent.getY() + this.o + 3) * 2), -1);
-        GL11.glPopMatrix();
+        String label = this.sliderSetting.getName() + ": " + valueText + suffix;
+        context.drawString(textRenderer, label,
+                (this.moduleComponent.categoryComponent.getX() + 4) * 2 + xOffset,
+                (this.moduleComponent.categoryComponent.getY() + this.o + 3) * 2, -1);
+        context.pose().popMatrix();
     }
 
     @Override
@@ -92,30 +99,29 @@ public class SliderComponent extends Component {
             double d = Math.min(this.moduleComponent.categoryComponent.getWidth() - 8, Math.max(0, mouseX - this.x));
             if (d == 0.0 && this.sliderSetting.canBeDisabled) {
                 this.targetValue = -1;
-            }
-            else {
-                double n = roundToInterval(d / (double) (this.moduleComponent.categoryComponent.getWidth() - 8) * (this.sliderSetting.getMax() - this.sliderSetting.getMin()) + this.sliderSetting.getMin(), 4);
+            } else {
+                double n = roundToInterval(d / (double) (this.moduleComponent.categoryComponent.getWidth() - 8)
+                        * (this.sliderSetting.getMax() - this.sliderSetting.getMin()) + this.sliderSetting.getMin(), 4);
                 this.targetValue = n;
             }
             this.displayedValue = displayedValue + (targetValue - displayedValue) * SLIDER_SPEED;
 
             if (targetValue == -1) {
                 sliderSetting.setValueRaw(-1);
-            }
-            else {
+            } else {
                 sliderSetting.setValue(this.targetValue);
             }
 
             if (this.displayedValue == -1) {
                 this.width = 0;
-            }
-            else {
+            } else {
                 double range = (sliderSetting.getMax() - sliderSetting.getMin());
                 double fraction = (this.displayedValue - sliderSetting.getMin()) / range;
                 this.width = (this.moduleComponent.categoryComponent.getWidth() - 8) * fraction;
             }
 
-            if (this.sliderSetting.getInput() != this.sliderSetting.getMin() && ModuleManager.hud != null && ModuleManager.hud.isEnabled() && !ModuleManager.organizedModules.isEmpty()) {
+            if (this.sliderSetting.getInput() != this.sliderSetting.getMin() && ModuleManager.hud != null
+                    && ModuleManager.hud.isEnabled() && !ModuleManager.organizedModules.isEmpty()) {
                 ModuleManager.sort();
             }
 
@@ -127,21 +133,19 @@ public class SliderComponent extends Component {
 
     public void onSliderChange() {
         double initial = (sliderSetting.getInput() == -1 && sliderSetting.canBeDisabled) ? -1 : sliderSetting.getInput();
-
         this.targetValue = initial;
         this.displayedValue = initial;
-        this.width = this.sliderSetting.getInput() == -1 ? 0 : (double) (this.moduleComponent.categoryComponent.getWidth() - 8) * (this.sliderSetting.getInput() - this.sliderSetting.getMin()) / (this.sliderSetting.getMax() - this.sliderSetting.getMin());
+        this.width = this.sliderSetting.getInput() == -1 ? 0
+                : (double) (this.moduleComponent.categoryComponent.getWidth() - 8) * (this.sliderSetting.getInput() - this.sliderSetting.getMin()) / (this.sliderSetting.getMax() - this.sliderSetting.getMin());
     }
 
     private static double roundToInterval(double value, int places) {
         if (places < 0) {
             return 0.0D;
         }
-        else {
-            BigDecimal bd = new BigDecimal(value);
-            bd = bd.setScale(places, RoundingMode.HALF_UP);
-            return bd.doubleValue();
-        }
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override

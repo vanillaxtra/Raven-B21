@@ -14,7 +14,7 @@ public class Json {
     private JsonElement json;
 
     public Json(String jsonString) {
-        this.json = (new JsonParser()).parse(jsonString);
+        this.json = JsonParser.parseString(jsonString);
     }
 
     protected Json(JsonElement json, byte s) {
@@ -43,7 +43,7 @@ public class Json {
     }
 
     public String get(final String member) {
-        return Utils.getString((JsonObject)this.json, member);
+        return Utils.getString((JsonObject) this.json, member);
     }
 
     public String get(final String member, final String defaultValue) {
@@ -56,7 +56,7 @@ public class Json {
     }
 
     public Json object(final String member) {
-        return new Json((member == null) ? this.json.getAsJsonObject() : ((JsonObject)this.json).getAsJsonObject(member), (byte) 0);
+        return new Json((member == null) ? this.json.getAsJsonObject() : ((JsonObject) this.json).getAsJsonObject(member), (byte) 0);
     }
 
     public List<Json> array() {
@@ -65,7 +65,7 @@ public class Json {
 
     public List<Json> array(final String member) {
         final List<Json> jsonList = new ArrayList<>();
-        for (final JsonElement element : (member == null) ? this.json.getAsJsonArray() : ((JsonObject)this.json).getAsJsonArray(member)) {
+        for (final JsonElement element : (member == null) ? this.json.getAsJsonArray() : ((JsonObject) this.json).getAsJsonArray(member)) {
             jsonList.add(new Json(element, (byte) 0));
         }
         return jsonList;
@@ -73,7 +73,7 @@ public class Json {
 
     public Map<String, Json> map() {
         final HashMap<String, Json> map = new HashMap<>();
-        for (final Map.Entry<String, JsonElement> entry : ((JsonObject)this.json).entrySet()) {
+        for (final Map.Entry<String, JsonElement> entry : ((JsonObject) this.json).entrySet()) {
             map.put(entry.getKey(), new Json(entry.getValue(), (byte) 0));
         }
         return map;

@@ -16,6 +16,7 @@ public class CommandLine extends Module {
         this.registerSetting(animate = new ButtonSetting("Animate", true));
     }
 
+    @Override
     public void onEnable() {
         Commands.setccs();
         opened = true;
@@ -23,12 +24,12 @@ public class CommandLine extends Module {
         (animation = new Timer(500.0F)).start();
     }
 
+    @Override
     public void onDisable() {
         closed = true;
         if (animation != null) {
             animation.start();
         }
-
         Commands.onDisable();
     }
 }

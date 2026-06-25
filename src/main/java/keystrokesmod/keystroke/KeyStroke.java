@@ -5,7 +5,7 @@ public class KeyStroke {
     public static int y;
     public static int currentColorNumber;
     public static boolean d;
-    public static boolean e;
+    public static boolean e = true;
     public static boolean f;
 
     public KeyStroke() {

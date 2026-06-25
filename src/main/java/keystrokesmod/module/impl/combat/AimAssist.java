@@ -1,13 +1,15 @@
 package keystrokesmod.module.impl.combat;
 
-import keystrokesmod.Raven;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.impl.world.AntiBot;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
+import keystrokesmod.utility.RotationUtils;
 import keystrokesmod.utility.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+
 public class AimAssist extends Module {
     private SliderSetting speed;
     private SliderSetting fov;
@@ -31,54 +33,51 @@ public class AimAssist extends Module {
     }
 
     public void onUpdate() {
-        if (mc.currentScreen == null && mc.inGameHasFocus) {
-            if (!weaponOnly.isToggled() || Utils.holdingWeapon()) {
-                if (!clickAim.isToggled() || Utils.isClicking()) {
-                    Entity en = this.getEnemy();
-                    if (en != null) {
-                        if (Raven.debug) {
-                            Utils.sendMessage(this.getName() + " &e" + en.getName());
-                        }
-                        if (blatantMode.isToggled()) {
-                            Utils.aim(en, 0.0F, false);
-                        } else {
-                            double n = Utils.n(en);
-                            if (n > 1.0D || n < -1.0D) {
-                                float val = (float) (-(n / (101.0D - (speed.getInput()))));
-                                mc.thePlayer.rotationYaw += val;
-                            }
-                        }
-                    }
-
-                }
+        if (mc.screen != null || !Mc.nullCheck()) {
+            return;
+        }
+        if (weaponOnly.isToggled() && !Utils.holdingWeapon()) {
+            return;
+        }
+        if (clickAim.isToggled() && !Utils.isClicking()) {
+            return;
+        }
+        Entity en = getEnemy();
+        if (en == null) {
+            return;
+        }
+        if (blatantMode.isToggled()) {
+            Utils.aim(en, 0.0F, false);
+        } else {
+            double n = Utils.n(en);
+            if (n > 1.0D || n < -1.0D) {
+                mc.player.setYRot(mc.player.getYRot() + (float) (-(n / (101.0D - speed.getInput()))));
             }
         }
     }
 
     private Entity getEnemy() {
-        final int n = (int)fov.getInput();
-        for (final EntityPlayer entityPlayer : mc.theWorld.playerEntities) {
-            if (entityPlayer != mc.thePlayer && entityPlayer.deathTime == 0) {
-                if (Utils.isFriended(entityPlayer)) {
-                    continue;
-                }
-                if (ignoreTeammates.isToggled() && Utils.isTeamMate(entityPlayer)) {
-                    continue;
-                }
-                if (!aimInvis.isToggled() && entityPlayer.isInvisible()) {
-                    continue;
-                }
-                if (mc.thePlayer.getDistanceToEntity(entityPlayer) > distance.getInput()) {
-                    continue;
-                }
-                if (AntiBot.isBot(entityPlayer)) {
-                    continue;
-                }
-                if (!blatantMode.isToggled() && n != 360 && !Utils.inFov((float)n, entityPlayer)) {
-                    continue;
-                }
-                return entityPlayer;
+        int fovVal = (int) fov.getInput();
+        for (Player player : mc.level.players()) {
+            if (player == mc.player || !player.isAlive()) {
+                continue;
             }
+            if (Utils.isFriended(player) || AntiBot.isBot(player)) {
+                continue;
+            }
+            if (ignoreTeammates.isToggled() && Utils.isTeamMate(player)) {
+                continue;
+            }
+            if (!aimInvis.isToggled() && player.isInvisible()) {
+                continue;
+            }
+            if (mc.player.distanceTo(player) > distance.getInput()) {
+                continue;
+            }
+            if (!blatantMode.isToggled() && fovVal != 360 && !Utils.inFov((float) fovVal, player)) {
+                continue;
+            }
+            return player;
         }
         return null;
     }

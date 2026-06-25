@@ -2,11 +2,11 @@ package keystrokesmod.script;
 
 import keystrokesmod.Raven;
 import keystrokesmod.clickgui.components.impl.CategoryComponent;
+import keystrokesmod.event.RavenEventBus;
 import keystrokesmod.module.Module;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.NetworkUtils;
 import keystrokesmod.utility.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -14,6 +14,7 @@ import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -26,24 +27,29 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 
 public class ScriptManager {
-    private Minecraft mc = Minecraft.getMinecraft();
     public LinkedHashMap<Script, Module> scripts = new LinkedHashMap<>();
     public JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     public boolean deleteTempFiles = true;
     public File directory;
     public List<String> imports = Arrays.asList(Color.class.getName(), Collections.class.getName(), List.class.getName(), ArrayList.class.getName(), Arrays.class.getName(), Map.class.getName(), HashMap.class.getName(), HashSet.class.getName(), ConcurrentHashMap.class.getName(), LinkedHashMap.class.getName(), Iterator.class.getName(), Comparator.class.getName(), AtomicInteger.class.getName(), AtomicLong.class.getName(), AtomicBoolean.class.getName(), Random.class.getName(), Matcher.class.getName());
     public String COMPILED_DIR = Utils.getCompilerDirectory();
-    public String jarPath = ((String[])ScriptManager.class.getProtectionDomain().getCodeSource().getLocation().getPath().split("\\.jar!"))[0].substring(5) + ".jar";
+    public String jarPath;
     private Map<String, String> loadedHashes = new HashMap<>();
 
     public ScriptManager() {
-        directory = new File(mc.mcDataDir + File.separator + "keystrokes", "scripts");
+        directory = new File(new File(Mc.mc().gameDirectory, "keystrokes"), "scripts");
+        try {
+            URL location = ScriptManager.class.getProtectionDomain().getCodeSource().getLocation();
+            jarPath = location.getPath().split("\\.jar!")[0].substring(location.getProtocol().equals("file") ? 5 : 0) + ".jar";
+        } catch (Exception e) {
+            jarPath = "";
+        }
     }
 
     public void onEnable(Script dv) {
         if (dv.event == null) {
             dv.event = new ScriptEvents(getModule(dv));
-            MinecraftForge.EVENT_BUS.register(dv.event);
+            RavenEventBus.register(dv.event);
         }
         dv.invoke("onEnable");
     }
@@ -75,25 +81,22 @@ public class ScriptManager {
                     }
                 }
             }
-        }
-        else {
+        } else {
             if (!this.scripts.isEmpty()) {
                 Iterator<Map.Entry<Script, Module>> iterator = scripts.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<Script, Module> entry = iterator.next();
                     String fileName = entry.getKey().file.getName();
                     String hash = calculateHash(entry.getKey().file);
-
                     String cachedHash = loadedHashes.get(fileName);
                     if (cachedHash != null && cachedHash.equals(hash) && !entry.getKey().error) {
-                        continue; // no changes detected, skip loading
+                        continue;
                     }
                     entry.getKey().delete();
                     iterator.remove();
                     loadedHashes.remove(fileName);
                 }
-            }
-            else {
+            } else {
                 loadedHashes.clear();
             }
         }
@@ -106,24 +109,19 @@ public class ScriptManager {
                     if (scriptFile.isFile() && scriptFile.getName().endsWith(".java")) {
                         String fileName = scriptFile.getName();
                         String hash = calculateHash(scriptFile);
-
                         String cachedHash = loadedHashes.get(fileName);
                         if (cachedHash != null && cachedHash.equals(hash)) {
-                            continue; // No changes detected, skip parsing
+                            continue;
                         }
                         parseFile(scriptFile);
                         loadedHashes.put(scriptFile.getName(), hash);
                     }
                 }
             }
-        }
-        else {
-            if (scriptDirectory.mkdirs()) {
-                System.out.println("Created script directory: " + scriptDirectory.getAbsolutePath());
-            }
-            else {
-                System.err.println("Failed to create script directory: " + scriptDirectory.getAbsolutePath());
-            }
+        } else if (scriptDirectory.mkdirs()) {
+            System.out.println("Created script directory: " + scriptDirectory.getAbsolutePath());
+        } else {
+            System.err.println("Failed to create script directory: " + scriptDirectory.getAbsolutePath());
         }
 
         for (Module module : this.scripts.values()) {
@@ -186,8 +184,6 @@ public class ScriptManager {
             }
         }
 
-
-
         Script script = new Script(scriptName);
         script.file = file;
         script.setCode(scriptContents.toString());
@@ -199,10 +195,9 @@ public class ScriptManager {
         return !script.error;
     }
 
-
     public void onDisable(Script script) {
         if (script.event != null) {
-            MinecraftForge.EVENT_BUS.unregister(script.event);
+            RavenEventBus.unregister(script.event);
             script.event = null;
         }
         script.invoke("onDisable");
@@ -233,14 +228,12 @@ public class ScriptManager {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] fileBytes = Files.readAllBytes(Paths.get(file.getPath()));
             byte[] hashBytes = digest.digest(fileBytes);
-
             StringBuilder hexString = new StringBuilder();
             for (byte b : hashBytes) {
                 hexString.append(String.format("%02x", b));
             }
             return hexString.toString();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return "";
         }
     }

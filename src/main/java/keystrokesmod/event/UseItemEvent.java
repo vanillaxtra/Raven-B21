@@ -1,9 +1,8 @@
 package keystrokesmod.event;
 
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraft.world.item.ItemStack;
 
-public class UseItemEvent extends Event {
+public class UseItemEvent {
     public ItemStack usedItemStack;
 
     public UseItemEvent(ItemStack usedItemStack) {

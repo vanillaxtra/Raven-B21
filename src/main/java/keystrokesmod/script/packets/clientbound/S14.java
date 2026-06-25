@@ -1,7 +1,6 @@
 package keystrokesmod.script.packets.clientbound;
 
-import keystrokesmod.mixin.impl.accessor.IAccessorS14PacketEntity;
-import net.minecraft.network.play.server.S14PacketEntity;
+import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
 
 public class S14 extends SPacket {
     public int entityId;
@@ -13,19 +12,20 @@ public class S14 extends SPacket {
     public boolean onGround;
     public boolean rotating;
 
-    public S14(S14PacketEntity e) {
-        super(e);
-        this.entityId = ((IAccessorS14PacketEntity) e).getEntityId();
-        this.posX = e.func_149062_c();
-        this.posY = e.func_149061_d();
-        this.posZ = e.func_149064_e();
-        this.yaw = e.func_149066_f();
-        this.pitch = e.func_149063_g();
-        this.rotating = e.func_149060_h();
+    public S14(ClientboundMoveEntityPacket packet) {
+        super(packet);
+        this.entityId = 0;
+        this.posX = 0;
+        this.posY = 0;
+        this.posZ = 0;
+        this.yaw = 0;
+        this.pitch = 0;
+        this.onGround = false;
+        this.rotating = false;
     }
 
     public S14(int entityId, byte posX, byte posY, byte posZ, byte yaw, byte pitch, boolean onGround) {
-        super(new S14PacketEntity.S17PacketEntityLookMove(entityId, posX, posY, posZ, yaw, pitch, onGround));
+        super(packet);
         this.entityId = entityId;
         this.posX = posX;
         this.posY = posY;
@@ -36,7 +36,7 @@ public class S14 extends SPacket {
     }
 
     public S14(int entityId, byte posX, byte posY, byte posZ, boolean onGround) {
-        super(new S14PacketEntity.S15PacketEntityRelMove(entityId, posX, posY, posZ, onGround));
+        super(packet);
         this.entityId = entityId;
         this.posX = posX;
         this.posY = posY;
@@ -45,7 +45,7 @@ public class S14 extends SPacket {
     }
 
     public S14(int entityId, byte yaw, byte pitch, boolean onGround) {
-        super(new S14PacketEntity.S16PacketEntityLook(entityId, yaw, pitch, onGround));
+        super(packet);
         this.entityId = entityId;
         this.yaw = yaw;
         this.pitch = pitch;

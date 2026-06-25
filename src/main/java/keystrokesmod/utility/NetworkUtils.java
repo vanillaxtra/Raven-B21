@@ -1,8 +1,9 @@
 package keystrokesmod.utility;
 
-import net.minecraft.client.renderer.texture.TextureUtil;
+import com.mojang.blaze3d.platform.NativeImage;
 import org.apache.commons.io.IOUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,76 +25,54 @@ public class NetworkUtils {
         return !c.isEmpty() && !c.contains("Invalid");
     }
 
-    public static String getTextFromURL(String _url, boolean appendNewline, boolean sendHardwareId) {
-        String r = "";
+    public static String getTextFromURL(String url, boolean appendNewline, boolean sendHardwareId) {
         HttpURLConnection con = null;
-
         try {
-            URL url = new URL(_url);
-            con = (HttpURLConnection) url.openConnection();
+            con = (HttpURLConnection) new URL(url).openConnection();
             if (sendHardwareId) {
-                con.setRequestProperty("id", Utils.getHardwareIdForLoad(_url));
+                con.setRequestProperty("id", Utils.getHardwareIdForLoad(url));
             }
-            r = getTextFromConnection(con, appendNewline);
+            return getTextFromConnection(con, appendNewline);
         } catch (IOException ignored) {
+            return "";
         } finally {
             if (con != null) {
                 con.disconnect();
             }
-
         }
-        return r;
     }
 
     public static String getTextFromConnection(HttpURLConnection connection, boolean appendIndent) {
-        if (connection != null) {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                String result;
-                try {
-                    StringBuilder stringBuilder = new StringBuilder();
-
-                    String input;
-                    while ((input = bufferedReader.readLine()) != null) {
-                        stringBuilder.append(input + (appendIndent ? "\n" : ""));
-                    }
-
-                    String res = stringBuilder.toString();
-                    connection.disconnect();
-
-                    result = res;
-                } finally {
-                    bufferedReader.close();
-                }
-
-                return result;
-            } catch (Exception ignored) {
-            }
+        if (connection == null) {
+            return "";
         }
-
-        return "";
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            String input;
+            while ((input = bufferedReader.readLine()) != null) {
+                stringBuilder.append(input).append(appendIndent ? "\n" : "");
+            }
+            connection.disconnect();
+            return stringBuilder.toString();
+        } catch (Exception ignored) {
+            return "";
+        }
     }
 
     public static BufferedImage getImageFromURL(String urlString) {
         try {
             URL url = new URL(urlString);
-            HttpURLConnection connection;
-
             while (true) {
-                connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setUseCaches(true);
                 connection.setInstanceFollowRedirects(true);
                 connection.setRequestProperty("User-Agent", CHROME_USER_AGENT);
                 connection.setRequestProperty("Accept", "text/html, image/*");
-
                 if (url.getHost().contains("imgur")) {
                     connection.setRequestProperty("Referer", "https://imgur.com/");
                 }
-
                 int responseCode = connection.getResponseCode();
-
                 if (responseCode >= 300 && responseCode < 400) {
                     String newLocation = connection.getHeaderField("Location");
                     if (newLocation == null || newLocation.isEmpty()) {
@@ -103,41 +82,34 @@ public class NetworkUtils {
                     connection.disconnect();
                     continue;
                 }
-
                 String contentType = connection.getContentType();
                 if (contentType != null && contentType.startsWith("image")) {
                     try (InputStream inputStream = connection.getInputStream()) {
-                        BufferedImage image = TextureUtil.readBufferedImage(inputStream);
+                        BufferedImage image = ImageIO.read(inputStream);
                         connection.disconnect();
                         return image;
                     }
                 }
-
                 try (InputStream inputStream = connection.getInputStream()) {
                     String body = IOUtils.toString(inputStream, "UTF-8");
                     String imageURL = "";
-
                     Matcher matcher = OGP_IMAGE_REGEX.matcher(body);
                     if (matcher.find()) {
                         imageURL = matcher.group("url");
-                    }
-                    else {
+                    } else {
                         matcher = IMG_TAG_REGEX.matcher(body);
                         if (matcher.find()) {
                             imageURL = matcher.group("url");
                         }
                     }
-
                     if (imageURL.isEmpty()) {
                         return null;
                     }
-
                     url = new URL(url, imageURL);
                     connection.disconnect();
                 }
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

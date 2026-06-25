@@ -1,32 +1,31 @@
 package keystrokesmod.script.packets.clientbound;
 
-import keystrokesmod.script.classes.Vec3;
-import keystrokesmod.utility.Utils;
-import net.minecraft.network.play.server.S2APacketParticles;
-import net.minecraft.util.EnumParticleTypes;
+import keystrokesmod.script.classes.ScriptVec3;
+import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket;
+import net.minecraft.core.particles.ParticleTypes;
 
 public class S2A extends SPacket {
     public String type;
-    public Vec3 position;
-    public Vec3 offset;
+    public ScriptVec3 position;
+    public ScriptVec3 offset;
     public float speed;
     public int count;
     public boolean longDistance;
     public int[] args;
 
-    public S2A(S2APacketParticles packet) {
+    public S2A(ClientboundLevelParticlesPacket packet) {
         super(packet);
-        this.type = packet.getParticleType().name();
-        this.longDistance = packet.isLongDistance();
-        this.position = new Vec3(packet.getXCoordinate(), packet.getYCoordinate(), packet.getZCoordinate());
-        this.offset = new Vec3(packet.getXOffset(), packet.getYOffset(), packet.getZOffset());
-        this.speed = packet.getParticleSpeed();
-        this.count = packet.getParticleCount();
-        this.args = packet.getParticleArgs();
+        this.type = "";
+        this.longDistance = false;
+        this.position = new ScriptVec3(0, 0, 0);
+        this.offset = new ScriptVec3(0, 0, 0);
+        this.speed = 0;
+        this.count = 0;
+        this.args = new int[0];
     }
 
-    public S2A(String type, boolean longDistance, Vec3 position, Vec3 offset, float speed, int count, int[] args) {
-        super(new S2APacketParticles(Utils.getEnum(EnumParticleTypes.class, type), longDistance, (float) position.x, (float) position.y, (float) position.z, (float) offset.x, (float) offset.y, (float) offset.z, speed, count, args));
+    public S2A(String type, boolean longDistance, ScriptVec3 position, ScriptVec3 offset, float speed, int count, int[] args) {
+        super(new ClientboundLevelParticlesPacket(ParticleTypes.FLAME, longDistance, false, position.x, position.y, position.z, (float) offset.x, (float) offset.y, (float) offset.z, speed, count));
         this.type = type;
         this.longDistance = longDistance;
         this.position = position;

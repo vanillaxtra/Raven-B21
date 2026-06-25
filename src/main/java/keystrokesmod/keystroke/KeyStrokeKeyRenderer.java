@@ -1,55 +1,64 @@
 package keystrokesmod.keystroke;
 
+import keystrokesmod.utility.Mc;
+import keystrokesmod.utility.RenderUtils;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.KeyMapping;
+import com.mojang.blaze3d.platform.InputConstants;
+import org.lwjgl.glfw.GLFW;
+
 import java.awt.Color;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
-import org.lwjgl.input.Keyboard;
-
 public class KeyStrokeKeyRenderer {
-    private Minecraft a = Minecraft.getMinecraft();
-    private KeyBinding keyBinding;
-    private int c;
-    private int d;
-    private boolean e = true;
-    private long f = 0L;
-    private int g = 255;
-    private double h = 1.0D;
+    private final KeyMapping keyBinding;
+    private final int offsetX;
+    private final int offsetY;
+    private boolean wasDown = true;
+    private long lastChange = 0L;
+    private int fadeAlpha = 255;
+    private double colorScale = 1.0D;
 
-    public KeyStrokeKeyRenderer(KeyBinding i, int j, int k) {
-        this.keyBinding = i;
-        this.c = j;
-        this.d = k;
+    public KeyStrokeKeyRenderer(KeyMapping keyBinding, int offsetX, int offsetY) {
+        this.keyBinding = keyBinding;
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
     }
 
-    public void renderKey(int l, int m, int color) {
-        boolean o = this.keyBinding.isKeyDown();
-        String p = Keyboard.getKeyName(this.keyBinding.getKeyCode());
-        if (o != this.e) {
-            this.e = o;
-            this.f = System.currentTimeMillis();
+    public void renderKey(GuiGraphics context, int baseX, int baseY, int color) {
+        boolean down = this.keyBinding.isDown();
+        String label = getKeyLabel(this.keyBinding);
+        if (down != this.wasDown) {
+            this.wasDown = down;
+            this.lastChange = System.currentTimeMillis();
         }
-
-        if (o) {
-            this.g = Math.min(255, (int) (2L * (System.currentTimeMillis() - this.f)));
-            this.h = Math.max(0.0D, 1.0D - (double) (System.currentTimeMillis() - this.f) / 20.0D);
+        if (down) {
+            this.fadeAlpha = Math.min(255, (int) (2L * (System.currentTimeMillis() - this.lastChange)));
+            this.colorScale = Math.max(0.0D, 1.0D - (System.currentTimeMillis() - this.lastChange) / 20.0D);
         } else {
-            this.g = Math.max(0, 255 - (int) (2L * (System.currentTimeMillis() - this.f)));
-            this.h = Math.min(1.0D, (double) (System.currentTimeMillis() - this.f) / 20.0D);
+            this.fadeAlpha = Math.max(0, 255 - (int) (2L * (System.currentTimeMillis() - this.lastChange)));
+            this.colorScale = Math.min(1.0D, (System.currentTimeMillis() - this.lastChange) / 20.0D);
         }
-
-        int q = color >> 16 & 255;
-        int r = color >> 8 & 255;
-        int s = color & 255;
-        int c = (new Color(q, r, s)).getRGB();
-        net.minecraft.client.gui.Gui.drawRect(l + this.c, m + this.d, l + this.c + 22, m + this.d + 22, 2013265920 + (this.g << 16) + (this.g << 8) + this.g);
+        int r = color >> 16 & 255;
+        int g = color >> 8 & 255;
+        int b = color & 255;
+        int outlineColor = new Color(r, g, b).getRGB();
+        int x1 = baseX + this.offsetX;
+        int y1 = baseY + this.offsetY;
+        int x2 = x1 + 22;
+        int y2 = y1 + 22;
+        int bgColor = 2013265920 + (this.fadeAlpha << 16) + (this.fadeAlpha << 8) + this.fadeAlpha;
+        RenderUtils.drawRect(x1, y1, x2, y2, bgColor);
         if (KeyStroke.f) {
-            net.minecraft.client.gui.Gui.drawRect(l + this.c, m + this.d, l + this.c + 22, m + this.d + 1, c);
-            net.minecraft.client.gui.Gui.drawRect(l + this.c, m + this.d + 21, l + this.c + 22, m + this.d + 22, c);
-            net.minecraft.client.gui.Gui.drawRect(l + this.c, m + this.d, l + this.c + 1, m + this.d + 22, c);
-            net.minecraft.client.gui.Gui.drawRect(l + this.c + 21, m + this.d, l + this.c + 22, m + this.d + 22, c);
+            RenderUtils.drawRect(x1, y1, x2, y1 + 1, outlineColor);
+            RenderUtils.drawRect(x1, y2 - 1, x2, y2, outlineColor);
+            RenderUtils.drawRect(x1, y1, x1 + 1, y2, outlineColor);
+            RenderUtils.drawRect(x2 - 1, y1, x2, y2, outlineColor);
         }
+        int textColor = -16777216 + ((int) (r * this.colorScale) << 16) + ((int) (g * this.colorScale) << 8) + (int) (b * this.colorScale);
+        context.drawString(Mc.mc().font, label, x1 + 8, y1 + 8, textColor, false);
+    }
 
-        this.a.fontRendererObj.drawString(p, l + this.c + 8, m + this.d + 8, -16777216 + ((int) ((double) q * this.h) << 16) + ((int) ((double) r * this.h) << 8) + (int) ((double) s * this.h));
+    private static String getKeyLabel(KeyMapping bind) {
+        return bind.getTranslatedKeyMessage().getString().toUpperCase();
     }
 }

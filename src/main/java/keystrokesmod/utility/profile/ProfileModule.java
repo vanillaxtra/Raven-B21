@@ -5,6 +5,7 @@ import keystrokesmod.clickgui.ClickGui;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.impl.client.Settings;
 import keystrokesmod.module.setting.impl.ButtonSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
 
 public class ProfileModule extends Module {
@@ -27,7 +28,7 @@ public class ProfileModule extends Module {
 
     @Override
     public void toggle() {
-        if (mc.currentScreen instanceof ClickGui || mc.currentScreen == null) {
+        if (Mc.mc().screen instanceof ClickGui || Mc.mc().screen == null) {
             if (this.profile == Raven.currentProfile && saved) {
                 return;
             }

@@ -8,14 +8,8 @@ import keystrokesmod.script.classes.PlayerState;
 import keystrokesmod.script.packets.clientbound.SPacket;
 import keystrokesmod.script.packets.serverbound.CPacket;
 import keystrokesmod.script.packets.serverbound.PacketHandler;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ScriptEvents {
     public Module module;
@@ -24,21 +18,21 @@ public class ScriptEvents {
         this.module = module;
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onChat(ClientChatReceivedEvent e) {
-        if (e.type == 2 || !Utils.nullCheck()) {
+        if (!Utils.nullCheck()) {
             return;
         }
-        final String r = Utils.stripColor(e.message.getUnformattedText());
+        final String r = Utils.stripColor(e.message.getString());
         if (r.isEmpty()) {
             return;
         }
-        if (Raven.scriptManager.invokeBoolean("onChat", module, e.message.getUnformattedText()) == 0) {
+        if (Raven.scriptManager.invokeBoolean("onChat", module, e.message.getString()) == 0) {
             e.setCanceled(true);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onSendPacket(SendPacketEvent e) {
         if (e.isCanceled() || e.getPacket() == null) {
             return;
@@ -52,7 +46,7 @@ public class ScriptEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onReceivePacket(ReceivePacketEvent e) {
         if (e.isCanceled() || e.getPacket() == null) {
             return;
@@ -63,46 +57,46 @@ public class ScriptEvents {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = -Integer.MAX_VALUE)
     public void onRenderWorldLast(RenderWorldLastEvent e) {
         if (!Utils.nullCheck()) {
             return;
         }
-        Raven.scriptManager.invoke("onRenderWorld", module, e.partialTicks);
+        Raven.scriptManager.invoke("onRenderWorld", module, e.tickDelta);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onPreUpdate(PreUpdateEvent e) {
         Raven.scriptManager.invoke("onPreUpdate", module);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onPostUpdate(PostUpdateEvent e) {
         Raven.scriptManager.invoke("onPostUpdate", module);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onRenderTick(TickEvent.RenderTickEvent e) {
-        if (e.phase != TickEvent.Phase.END || !Utils.nullCheck()) {
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
+    public void onRenderTick(RenderTickEvent e) {
+        if (e.phase != RenderTickEvent.Phase.END || !Utils.nullCheck()) {
             return;
         }
-        Raven.scriptManager.invoke("onRenderTick", module, e.renderTickTime);
+        Raven.scriptManager.invoke("onRenderTick", module, Mc.mc().getDeltaTracker().getGameTimeDeltaPartialTick(false));
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onAntiCheatFlag(AntiCheatFlagEvent e) {
         Raven.scriptManager.invoke("onAntiCheatFlag", module, e.flag, Entity.convert(e.entity));
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onGuiUpdate(GuiUpdateEvent e) {
-        if (e.guiScreen == null) {
+        if (e.Screen == null) {
             return;
         }
-        Raven.scriptManager.invoke("onGuiUpdate", module, e.guiScreen.getClass().getSimpleName(), e.opened);
+        Raven.scriptManager.invoke("onGuiUpdate", module, e.Screen.getClass().getSimpleName(), e.opened);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onPreMotion(PreMotionEvent e) {
         PlayerState playerState = new PlayerState(e, (byte) 0);
         Raven.scriptManager.invoke("onPreMotion", module, playerState);
@@ -121,7 +115,7 @@ public class ScriptEvents {
         e.setSneaking(playerState.isSneaking);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onWorldJoin(EntityJoinWorldEvent e) {
         if (e.entity == null) {
             return;
@@ -129,19 +123,19 @@ public class ScriptEvents {
         Raven.scriptManager.invoke("onWorldJoin", module, Entity.convert(e.entity));
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onPostInput(PostPlayerInputEvent e) {
         Raven.scriptManager.invoke("onPostPlayerInput", module);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onPostMotion(PostMotionEvent e) {
         Raven.scriptManager.invoke("onPostMotion", module);
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
     public void onMouse(MouseEvent e) {
-        if (Raven.scriptManager.invokeBoolean("onMouse", module, e.button, e.buttonstate) == 0) {
+        if (Raven.scriptManager.invokeBoolean("onMouse", module, e.button, e.buttonState) == 0) {
             e.setCanceled(true);
         }
     }

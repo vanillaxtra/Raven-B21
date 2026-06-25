@@ -6,8 +6,9 @@ import keystrokesmod.module.impl.combat.KillAura;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.DescriptionSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.Vec3;
+import keystrokesmod.utility.Mc;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 
 public class KeepSprint extends Module {
     public static SliderSetting slow;
@@ -15,39 +16,38 @@ public class KeepSprint extends Module {
     public static ButtonSetting reduceReachHits;
 
     public KeepSprint() {
-        super("KeepSprint", Module.category.movement, 0);
-        this.registerSetting(new DescriptionSetting(new String("Default is 40% motion reduction.")));
+        super("KeepSprint", category.movement, 0);
+        this.registerSetting(new DescriptionSetting("Default is 40% motion reduction."));
         this.registerSetting(slow = new SliderSetting("Slow %", 40.0D, 0.0D, 40.0D, 1.0D));
         this.registerSetting(disableWhileJump = new ButtonSetting("Disable while jumping", false));
         this.registerSetting(reduceReachHits = new ButtonSetting("Only reduce reach hits", false));
     }
 
     public static void keepSprint(Entity en) {
-        boolean vanilla = false;
-        if (disableWhileJump.isToggled() && !mc.thePlayer.onGround) {
-            vanilla = true;
+        if (!Mc.nullCheck()) {
+            return;
         }
-        else if (reduceReachHits.isToggled() && !mc.thePlayer.capabilities.isCreativeMode) {
+        boolean vanilla = false;
+        if (disableWhileJump.isToggled() && !mc.player.onGround()) {
+            vanilla = true;
+        } else if (reduceReachHits.isToggled() && !mc.player.isCreative()) {
             double distance = -1.0;
-            final Vec3 getPositionEyes = mc.thePlayer.getPositionEyes(1.0f);
+            Vec3 eyes = mc.player.getEyePosition();
             if (ModuleManager.killAura != null && ModuleManager.killAura.isEnabled() && KillAura.target != null) {
-                distance = getPositionEyes.distanceTo(KillAura.target.getPositionEyes(1.0f));
-            }
-            else if (ModuleManager.reach != null && ModuleManager.reach.isEnabled()) {
-                distance = getPositionEyes.distanceTo(mc.objectMouseOver.hitVec);
+                distance = eyes.distanceTo(KillAura.target.getEyePosition());
+            } else if (ModuleManager.reach != null && ModuleManager.reach.isEnabled() && mc.hitResult != null) {
+                distance = eyes.distanceTo(mc.hitResult.getLocation());
             }
             if (distance != -1.0 && distance <= 3.0) {
                 vanilla = true;
             }
         }
+        Vec3 v = mc.player.getDeltaMovement();
         if (vanilla) {
-            mc.thePlayer.motionX *= 0.6;
-            mc.thePlayer.motionZ *= 0.6;
-        }
-        else {
+            mc.player.setDeltaMovement(v.x * 0.6, v.y, v.z * 0.6);
+        } else {
             float mult = (100.0f - (float) slow.getInput()) / 100.0f;
-            mc.thePlayer.motionX *= mult;
-            mc.thePlayer.motionZ *= mult;
+            mc.player.setDeltaMovement(v.x * mult, v.y, v.z * mult);
         }
     }
 }

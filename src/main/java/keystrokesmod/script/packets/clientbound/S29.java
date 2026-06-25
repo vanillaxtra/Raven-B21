@@ -1,24 +1,24 @@
 package keystrokesmod.script.packets.clientbound;
 
-import keystrokesmod.script.classes.Vec3;
-import net.minecraft.network.play.server.S29PacketSoundEffect;
+import keystrokesmod.script.classes.ScriptVec3;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 
 public class S29 extends SPacket {
     public String sound;
-    public Vec3 position;
+    public ScriptVec3 position;
     public float volume;
     public float pitch;
 
-    public S29(S29PacketSoundEffect packet) {
+    public S29(ClientboundSoundPacket packet) {
         super(packet);
-        this.sound = packet.getSoundName();
-        this.position = new Vec3(packet.getX(), packet.getY(), packet.getZ());
-        this.volume = packet.getVolume();
-        this.pitch = packet.getPitch();
+        this.sound = "";
+        this.position = new ScriptVec3(0, 0, 0);
+        this.volume = 1;
+        this.pitch = 1;
     }
 
-    public S29(String sound, Vec3 position, float volume, float pitch) {
-        super(new S29PacketSoundEffect(sound, position.x, position.y, position.z, volume, pitch));
+    public S29(String sound, ScriptVec3 position, float volume, float pitch) {
+        super(new ClientboundSoundPacket(net.minecraft.core.Holder.direct(net.minecraft.sounds.SoundEvents.EMPTY), net.minecraft.sounds.SoundSource.MASTER, position.x, position.y, position.z, volume, pitch, 0L));
         this.sound = sound;
         this.position = position;
         this.volume = volume;

@@ -1,10 +1,11 @@
 package keystrokesmod.module.impl.movement;
 
 import keystrokesmod.clickgui.ClickGui;
-import keystrokesmod.mixin.impl.accessor.IAccessorMinecraft;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
+import keystrokesmod.utility.TimerHelper;
 import keystrokesmod.utility.Utils;
 
 public class Timer extends Module {
@@ -12,7 +13,7 @@ public class Timer extends Module {
     private ButtonSetting strafeOnly;
 
     public Timer() {
-        super("Timer", Module.category.movement, 0);
+        super("Timer", category.movement, 0);
         this.registerSetting(speed = new SliderSetting("Speed", 1.0D, 0.5D, 2.5D, 0.01D));
         this.registerSetting(strafeOnly = new ButtonSetting("Strafe only", false));
     }
@@ -23,16 +24,18 @@ public class Timer extends Module {
     }
 
     public void onUpdate() {
-        if (!(mc.currentScreen instanceof ClickGui)) {
-            if (strafeOnly.isToggled() && mc.thePlayer.moveStrafing == 0) {
-                Utils.resetTimer();
-                return;
-            }
-            ((IAccessorMinecraft) mc).getTimer().timerSpeed = (float) speed.getInput();
+        if (!Mc.nullCheck()) {
+            return;
         }
-        else {
+        if (mc.screen instanceof ClickGui) {
             Utils.resetTimer();
+            return;
         }
+        if (strafeOnly.isToggled() && Utils.getMovementSideways() == 0) {
+            Utils.resetTimer();
+            return;
+        }
+        TimerHelper.speed = (float) speed.getInput();
     }
 
     public void onDisable() {

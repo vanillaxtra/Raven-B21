@@ -1,10 +1,6 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-@Cancelable
-public class PreSlotScrollEvent extends Event {
+public class PreSlotScrollEvent extends CancelableEvent {
     public int slot;
     public int previousSlot;
 

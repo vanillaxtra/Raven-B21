@@ -2,8 +2,8 @@ package keystrokesmod.module.setting.impl;
 
 import com.google.gson.JsonObject;
 import keystrokesmod.event.PostSetSliderEvent;
+import keystrokesmod.event.RavenEventBus;
 import keystrokesmod.module.setting.Setting;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -120,7 +120,7 @@ public class SliderSetting extends Setting {
 
     public void setValueWithEvent(double newValue) {
         double prev = this.defaultValue;
-        MinecraftForge.EVENT_BUS.post(new PostSetSliderEvent(prev, this.setValue(newValue)));
+        RavenEventBus.post(new PostSetSliderEvent(prev, this.setValue(newValue)));
     }
 
     public void setValueRaw(double n) {
@@ -130,7 +130,7 @@ public class SliderSetting extends Setting {
     public void setValueRawWithEvent(double n) {
         double prev = this.defaultValue;
         this.defaultValue = n;
-        MinecraftForge.EVENT_BUS.post(new PostSetSliderEvent(prev, n));
+        RavenEventBus.post(new PostSetSliderEvent(prev, n));
     }
 
     public static double correctValue(double v, double i, double a) {

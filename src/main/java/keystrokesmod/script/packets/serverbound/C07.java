@@ -1,32 +1,46 @@
 package keystrokesmod.script.packets.serverbound;
 
-import keystrokesmod.script.classes.Vec3;
+import keystrokesmod.script.classes.ScriptVec3;
 import keystrokesmod.utility.Utils;
-import net.minecraft.network.play.client.C07PacketPlayerDigging;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 public class C07 extends CPacket {
-    public Vec3 position;
+    public ScriptVec3 position;
     public String status;
     public String facing;
 
-    public C07(Vec3 position, String status, String facing) {
+    public C07(ScriptVec3 position, String status, String facing) {
         super(null);
         this.position = position;
         this.status = status;
         this.facing = facing;
     }
 
-    public C07(C07PacketPlayerDigging packet) {
+    public C07(ServerboundPlayerActionPacket packet) {
         super(packet);
-        this.position = Vec3.convert(packet.getPosition());
-        this.status = packet.getStatus().name();
-        this.facing = packet.getFacing().name();
+        this.position = new ScriptVec3(packet.getPos());
+        this.status = packet.getAction().name();
+        this.facing = packet.getDirection().name();
     }
 
     @Override
-    public C07PacketPlayerDigging convert() {
-        return new C07PacketPlayerDigging(Utils.getEnum(C07PacketPlayerDigging.Action.class, this.status), new BlockPos(this.position.x, this.position.y, this.position.z), Utils.getEnum(EnumFacing.class, this.facing));
+    public ServerboundPlayerActionPacket convert() {
+        if (this.packet instanceof ServerboundPlayerActionPacket actionPacket) {
+            return actionPacket;
+        }
+        ServerboundPlayerActionPacket.Action action = Utils.getEnum(ServerboundPlayerActionPacket.Action.class, this.status);
+        Direction direction = Utils.getEnum(Direction.class, this.facing);
+        if (action == null) {
+            action = ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK;
+        }
+        if (direction == null) {
+            direction = Direction.UP;
+        }
+        if (this.position == null) {
+            return new ServerboundPlayerActionPacket(action, BlockPos.ZERO, direction, 0);
+        }
+        return new ServerboundPlayerActionPacket(action, ScriptVec3.getBlockPos(this.position), direction, 0);
     }
 }

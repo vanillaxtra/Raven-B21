@@ -1,7 +1,8 @@
 package keystrokesmod.script.packets.serverbound;
 
 import keystrokesmod.script.classes.ItemStack;
-import net.minecraft.network.play.client.C0EPacketClickWindow;
+import net.minecraft.network.protocol.game.ServerboundContainerClickPacket;
+import net.minecraft.world.inventory.ClickType;
 
 public class C0E extends CPacket {
     public int windowId;
@@ -20,18 +21,24 @@ public class C0E extends CPacket {
         this.itemStack = itemStack;
     }
 
-    public C0E(C0EPacketClickWindow packet) {
+    public C0E(ServerboundContainerClickPacket packet) {
         super(packet);
-        this.windowId = packet.getWindowId();
-        this.slot = packet.getSlotId();
-        this.button = packet.getUsedButton();
-        this.mode = packet.getMode();
-        this.action = packet.getActionNumber();
-        this.itemStack = new ItemStack(packet.getClickedItem(), (byte) 0);
+        this.windowId = packet.containerId();
+        this.slot = packet.slotNum();
+        this.button = packet.buttonNum();
+        this.mode = packet.clickType().ordinal();
+        this.action = 0;
+        this.itemStack = new ItemStack(packet.changedItem(), (byte) 0);
     }
 
     @Override
-    public C0EPacketClickWindow convert() {
-        return new C0EPacketClickWindow(this.windowId, this.slot, this.button, this.mode, this.itemStack.itemStack, this.action);
+    public ServerboundContainerClickPacket convert() {
+        if (this.packet instanceof ServerboundContainerClickPacket clickPacket) {
+            return clickPacket;
+        }
+        ClickType[] types = ClickType.values();
+        ClickType actionType = this.mode >= 0 && this.mode < types.length ? types[this.mode] : ClickType.PICKUP;
+        net.minecraft.world.item.ItemStack stack = this.itemStack != null ? this.itemStack.itemStack : net.minecraft.world.item.ItemStack.EMPTY;
+        return new ServerboundContainerClickPacket(this.windowId, this.action, this.slot, this.button, actionType, stack, null);
     }
 }

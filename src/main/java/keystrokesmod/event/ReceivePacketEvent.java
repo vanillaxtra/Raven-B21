@@ -1,12 +1,9 @@
 package keystrokesmod.event;
 
-import net.minecraft.network.Packet;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraft.network.protocol.Packet;
 
-@Cancelable
-public class ReceivePacketEvent extends Event {
-    private Packet<?> packet;
+public class ReceivePacketEvent extends CancelableEvent {
+    private final Packet<?> packet;
 
     public ReceivePacketEvent(Packet<?> packet) {
         this.packet = packet;

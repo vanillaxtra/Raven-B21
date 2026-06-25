@@ -1,34 +1,39 @@
 package keystrokesmod.mixin.impl.world;
 
-import java.util.List;
-
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
-
 import keystrokesmod.event.CollisionEvent;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
+import keystrokesmod.event.RavenEventBus;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Block.class)
 public abstract class MixinBlock {
-    @Shadow
-    public abstract AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state);
-
-    @Overwrite
-    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
-        AxisAlignedBB axisalignedbb = this.getCollisionBoundingBox(worldIn, pos, state);
-        CollisionEvent event = new CollisionEvent(pos, (Block)(Object)this, axisalignedbb);
-        MinecraftForge.EVENT_BUS.post(event);
-        axisalignedbb = event.boundingBox;
-        if (axisalignedbb != null && mask.intersectsWith(axisalignedbb)) {
-            list.add(axisalignedbb);
+    @Inject(method = "getCollisionShape", at = @At("RETURN"), cancellable = true)
+    private void onGetCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir) {
+        VoxelShape shape = cir.getReturnValue();
+        if (shape.isEmpty()) {
+            return;
         }
+
+        AABB box = shape.bounds().move(pos);
+        CollisionEvent event = new CollisionEvent(pos, (Block) (Object) this, box);
+        RavenEventBus.post(event);
+
+        if (event.boundingBox == null) {
+            cir.setReturnValue(Shapes.empty());
+            return;
+        }
+
+        AABB local = event.boundingBox.move(-pos.getX(), -pos.getY(), -pos.getZ());
+        cir.setReturnValue(Shapes.create(local));
     }
 }
-

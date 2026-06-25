@@ -1,8 +1,7 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class PostSetSliderEvent extends Event {
+public class PostSetSliderEvent  {
     public double previousVal;
     public double newVal;
 

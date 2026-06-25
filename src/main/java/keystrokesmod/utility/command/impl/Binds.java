@@ -5,7 +5,8 @@ import keystrokesmod.module.Module;
 import keystrokesmod.module.ModuleManager;
 import keystrokesmod.utility.command.Command;
 import keystrokesmod.utility.profile.Profile;
-import org.lwjgl.input.Keyboard;
+import com.mojang.blaze3d.platform.InputConstants;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public class Binds extends Command {
             }
         }
         else if (args.length == 2) {
-            int keycode = Keyboard.getKeyIndex(args[1].toUpperCase());
+            int keycode = getKeyIndex(args[1]);
             if (keycode == 0) {
                 chatWithPrefix("&7Invalid key.");
                 return;
@@ -77,7 +78,7 @@ public class Binds extends Command {
         if (keycode != 0 && module.getKeycode() != keycode) {
             return;
         }
-        String keyName = (module.getKeycode() >= 1000) ? "M" + (module.getKeycode() - 1000) : Keyboard.getKeyName(module.getKeycode());
+        String keyName = getKeyName(module.getKeycode());
         List<String> moduleNames = bindsMap.get(keyName);
         if (moduleNames == null) {
             moduleNames = new ArrayList<>();
@@ -92,5 +93,48 @@ public class Binds extends Command {
             total += modules.size();
         }
         return total;
+    }
+
+    private int getKeyIndex(String keyName) {
+        String upper = keyName.toUpperCase();
+        if (upper.startsWith("M") && upper.length() > 1) {
+            try {
+                return Integer.parseInt(upper.substring(1)) + 1000;
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        if (upper.equals("MSCROLLUP")) {
+            return 1069;
+        }
+        if (upper.equals("MSCROLLDOWN")) {
+            return 1070;
+        }
+        for (int i = 32; i <= 348; i++) {
+            String glfwName = GLFW.glfwGetKeyName(i, 0);
+            if (glfwName != null && glfwName.equalsIgnoreCase(keyName)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private String getKeyName(int keycode) {
+        if (keycode >= 1000) {
+            if (keycode == 1069) {
+                return "MSCROLLUP";
+            }
+            if (keycode == 1070) {
+                return "MSCROLLDOWN";
+            }
+            return "M" + (keycode - 1000);
+        }
+        if (keycode == 0) {
+            return "NONE";
+        }
+        String glfwName = GLFW.glfwGetKeyName(keycode, 0);
+        if (glfwName != null) {
+            return glfwName.toUpperCase();
+        }
+        return "KEY" + keycode;
     }
 }

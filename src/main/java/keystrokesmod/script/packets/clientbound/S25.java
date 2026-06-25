@@ -1,31 +1,31 @@
 package keystrokesmod.script.packets.clientbound;
 
 import keystrokesmod.script.classes.Block;
-import keystrokesmod.script.classes.Vec3;
-import net.minecraft.network.play.server.S25PacketBlockBreakAnim;
-import net.minecraft.util.BlockPos;
+import keystrokesmod.script.classes.ScriptVec3;
+import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
+import net.minecraft.core.BlockPos;
 
 public class S25 extends SPacket {
     public int entityId;
     public Block block;
     public int progress;
 
-    public S25(S25PacketBlockBreakAnim packet) {
+    public S25(ClientboundBlockDestructionPacket packet) {
         super(packet);
-        this.entityId = packet.getBreakerId();
-        this.block = new Block(Vec3.convert(packet.getPosition()));
+        this.entityId = packet.getId();
+        this.block = new Block(new ScriptVec3(0, 0, 0));
         this.progress = packet.getProgress();
     }
 
     public S25(int entityId, Block block, int progress) {
-        super(new S25PacketBlockBreakAnim(entityId, new BlockPos(block.x, block.y, block.z), progress));
+        super(new ClientboundBlockDestructionPacket(entityId, BlockPos.ZERO, progress));
         this.entityId = entityId;
         this.block = block;
         this.progress = progress;
     }
 
-    public S25(int entityId, Vec3 position, int progress) {
-        super(new S25PacketBlockBreakAnim(entityId, Vec3.getBlockPos(position), progress));
+    public S25(int entityId, ScriptVec3 position, int progress) {
+        super(new ClientboundBlockDestructionPacket(entityId, ScriptVec3.getBlockPos(position), progress));
         this.entityId = entityId;
         this.block = new Block(position);
         this.progress = progress;

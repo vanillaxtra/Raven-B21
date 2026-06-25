@@ -1,6 +1,6 @@
 package keystrokesmod.script.packets.serverbound;
 
-import net.minecraft.network.play.client.C01PacketChatMessage;
+import net.minecraft.network.protocol.game.ServerboundChatPacket;
 
 public class C01 extends CPacket {
     public String message;
@@ -10,13 +10,13 @@ public class C01 extends CPacket {
         this.message = message;
     }
 
-    public C01(C01PacketChatMessage packet, byte f) {
+    public C01(ServerboundChatPacket packet, byte f) {
         super(packet);
-        this.message = packet.getMessage();
+        this.message = "";
     }
 
     @Override
-    public C01PacketChatMessage convert() {
-        return new C01PacketChatMessage(this.message);
+    public ServerboundChatPacket convert() {
+        return this.packet instanceof ServerboundChatPacket chatPacket ? chatPacket : null;
     }
 }

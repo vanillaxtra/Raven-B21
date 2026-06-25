@@ -1,21 +1,19 @@
 package keystrokesmod.utility;
 
 import keystrokesmod.Raven;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import keystrokesmod.event.RenderTickEvent;
+import keystrokesmod.event.SubscribeEvent;
 
 public class Debugger {
-    private static Minecraft mc = Minecraft.getMinecraft();
-    public static boolean MIXIN; // for debugging mixin related
-    public static boolean BACKGROUND; // background processes like cache clearing and such
+    public static boolean MIXIN;
+    public static boolean BACKGROUND;
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent ev) {
-        if (!Raven.debug || ev.phase != TickEvent.Phase.END || !Utils.nullCheck()) {
+    public void onRenderTick(RenderTickEvent event) {
+        if (!Raven.debug || event.phase != RenderTickEvent.Phase.END || !Mc.nullCheck()) {
             return;
         }
-        if (mc.currentScreen == null) {
+        if (Mc.mc().screen == null) {
             RenderUtils.renderBPS(true, true);
         }
     }

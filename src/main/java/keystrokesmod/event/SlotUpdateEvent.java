@@ -1,8 +1,6 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-public class SlotUpdateEvent extends Event {
+public class SlotUpdateEvent {
     public int slot;
 
     public SlotUpdateEvent(int slot) {

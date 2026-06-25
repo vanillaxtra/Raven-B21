@@ -1,21 +1,20 @@
 package keystrokesmod.utility;
 
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import keystrokesmod.event.ClientChatReceivedEvent;
+import keystrokesmod.event.SubscribeEvent;
 
 public class Ping {
     private static boolean sendChat = false;
     private static long sendTime = 0L;
-    // For chat commands
     private static boolean sendChatCC = false;
     private static long sendTimeCC = 0L;
 
     @SubscribeEvent
     public void onChatMessageRecieved(ClientChatReceivedEvent event) {
-        if ((sendChat ^ sendChatCC) && Utils.nullCheck()) {
-            if (Utils.stripColor(event.message.getUnformattedText()).startsWith("Unknown")) {
+        if ((sendChat ^ sendChatCC) && Mc.nullCheck()) {
+            if (Utils.stripColor(event.message.getString()).startsWith("Unknown")) {
                 event.setCanceled(true);
-                this.getPing(sendChatCC);
+                getPing(sendChatCC);
                 sendChat = false;
                 sendChatCC = false;
             }
@@ -25,28 +24,24 @@ public class Ping {
     public static void checkPing(boolean isChat) {
         if (isChat) {
             Utils.sendMessage("&7[&fping&7] &7Checking...");
-        }
-        else {
-            Commands.print("§3Checking...", 1);
+        } else {
+            Commands.print("Â§3Checking...", 1);
         }
         if (sendChat) {
             if (isChat) {
                 Utils.sendMessage("&7[&fping&7] &7Please wait.");
+            } else {
+                Commands.print("Â§cPlease wait.", 0);
             }
-            else {
-                Commands.print("§cPlease wait.", 0);
-            }
+            return;
         }
-        else {
-            Utils.mc.thePlayer.sendChatMessage("/...");
-            if (isChat) {
-                sendChatCC = true;
-                sendTimeCC = System.currentTimeMillis();
-            }
-            else {
-                sendChat = true;
-                sendTime = System.currentTimeMillis();
-            }
+        Mc.player().connection.sendCommand("...");
+        if (isChat) {
+            sendChatCC = true;
+            sendTimeCC = System.currentTimeMillis();
+        } else {
+            sendChat = true;
+            sendTime = System.currentTimeMillis();
         }
     }
 
@@ -57,8 +52,7 @@ public class Ping {
         }
         if (isChat) {
             Utils.sendMessage("&7[&fping&7] &7Your ping: &b" + ping + "&7ms.");
-        }
-        else {
+        } else {
             Commands.print("Your ping: " + ping + "ms", 0);
         }
         reset(isChat);
@@ -68,8 +62,7 @@ public class Ping {
         if (isChat) {
             sendChatCC = false;
             sendTimeCC = 0L;
-        }
-        else {
+        } else {
             sendChat = false;
             sendTime = 0L;
         }

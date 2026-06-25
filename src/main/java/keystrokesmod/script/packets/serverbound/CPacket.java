@@ -1,12 +1,12 @@
 package keystrokesmod.script.packets.serverbound;
 
-import net.minecraft.network.Packet;
+import net.minecraft.network.protocol.Packet;
 
 public class CPacket {
     public String name;
-    public net.minecraft.network.Packet packet;
+    public Packet<?> packet;
 
-    public CPacket(net.minecraft.network.Packet packet) {
+    public CPacket(Packet<?> packet) {
         if (packet == null) {
             return;
         }
@@ -14,7 +14,7 @@ public class CPacket {
         this.name = packet.getClass().getSimpleName();
     }
 
-    public Packet convert() {
+    public Packet<?> convert() {
         return packet;
     }
 }

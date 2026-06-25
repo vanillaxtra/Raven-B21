@@ -1,22 +1,22 @@
 package keystrokesmod.script.packets.clientbound;
 
 import keystrokesmod.script.classes.ItemStack;
-import net.minecraft.network.play.server.S2FPacketSetSlot;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 
 public class S2F extends SPacket {
     public int windowId;
     public int slot;
     public ItemStack itemStack;
 
-    public S2F(S2FPacketSetSlot packet) {
+    public S2F(ClientboundContainerSetSlotPacket packet) {
         super(packet);
-        this.windowId = packet.func_149175_c();
-        this.slot = packet.func_149173_d();
-        this.itemStack = ItemStack.convert(packet.func_149174_e());
+        this.windowId = packet.getContainerId();
+        this.slot = packet.getSlot();
+        this.itemStack = new ItemStack(packet.getItem(), (byte) 0);
     }
 
     public S2F(int windowId, int slot, ItemStack itemStack) {
-        super(new S2FPacketSetSlot(windowId, slot, itemStack.itemStack));
+        super(new ClientboundContainerSetSlotPacket(windowId, 0, slot, itemStack.itemStack));
         this.windowId = windowId;
         this.slot = slot;
         this.itemStack = itemStack;

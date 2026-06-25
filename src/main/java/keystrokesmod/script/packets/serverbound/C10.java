@@ -1,7 +1,7 @@
 package keystrokesmod.script.packets.serverbound;
 
 import keystrokesmod.script.classes.ItemStack;
-import net.minecraft.network.play.client.C10PacketCreativeInventoryAction;
+import net.minecraft.network.protocol.game.ServerboundSetCreativeModeSlotPacket;
 
 public class C10 extends CPacket {
     public int slot;
@@ -13,14 +13,15 @@ public class C10 extends CPacket {
         this.itemStack = itemStack;
     }
 
-    public C10(C10PacketCreativeInventoryAction packet) {
+    public C10(ServerboundSetCreativeModeSlotPacket packet) {
         super(packet);
-        this.slot = packet.getSlotId();
-        this.itemStack = ItemStack.convert(packet.getStack());
+        this.slot = packet.slotNum();
+        this.itemStack = new ItemStack(packet.itemStack(), (byte) 0);
     }
 
     @Override
-    public C10PacketCreativeInventoryAction convert() {
-        return new C10PacketCreativeInventoryAction(slot, itemStack.itemStack);
+    public ServerboundSetCreativeModeSlotPacket convert() {
+        net.minecraft.world.item.ItemStack stack = this.itemStack != null ? this.itemStack.itemStack : net.minecraft.world.item.ItemStack.EMPTY;
+        return new ServerboundSetCreativeModeSlotPacket(this.slot, stack);
     }
 }

@@ -2,8 +2,7 @@ package keystrokesmod.module.setting.impl;
 
 import com.google.gson.JsonObject;
 import keystrokesmod.module.setting.Setting;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import keystrokesmod.utility.BindUtil;
 
 public class KeySetting extends Setting {
     private int key;
@@ -33,15 +32,7 @@ public class KeySetting extends Setting {
     }
 
     public boolean isPressed() {
-        if (this.getKey() == 0) {
-            return false;
-        }
-        if (this.getKey() >= 1000) {
-            return Mouse.isButtonDown(this.getKey() - 1000);
-        }
-        else {
-            return Keyboard.isKeyDown(this.getKey());
-        }
+        return BindUtil.isBindDown(this.key);
     }
 
     @Override
@@ -50,8 +41,8 @@ public class KeySetting extends Setting {
             int keyValue = this.key;
             try {
                 keyValue = data.getAsJsonPrimitive(getName()).getAsInt();
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
             this.key = keyValue;
         }
     }

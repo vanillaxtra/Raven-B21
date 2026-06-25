@@ -1,9 +1,11 @@
 package keystrokesmod.clickgui.components;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 public class Component {
     public boolean visible = true;
 
-    public void render() {
+    public void render(GuiGraphics context) {
     }
 
     public void drawScreen(int x, int y) {
@@ -16,7 +18,7 @@ public class Component {
     public void mouseReleased(int x, int y, int m) {
     }
 
-    public void keyTyped(char t, int k) {
+    public void keyPressed(int keyCode, int scanCode, int modifiers) {
     }
 
     public void updateHeight(int n) {
@@ -29,5 +31,6 @@ public class Component {
     public void onGuiClosed() {
     }
 
-    public void onScroll(int scroll) {}
+    public void onScroll(int scroll) {
+    }
 }

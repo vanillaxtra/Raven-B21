@@ -1,9 +1,8 @@
 package keystrokesmod.event;
 
 import keystrokesmod.script.classes.PlayerState;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class PreMotionEvent extends Event {
+public class PreMotionEvent {
     private double posX;
     public double posY;
     private double posZ;
@@ -64,14 +63,14 @@ public class PreMotionEvent extends Event {
 
     public void setYaw(float yaw) {
         this.yaw = yaw;
-        this.setRenderYaw = true;
+        setRenderYaw = true;
         setRotations = true;
     }
 
     public void setRotations(float yaw, float pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
-        this.setRenderYaw = true;
+        setRenderYaw = true;
         setRotations = true;
     }
 

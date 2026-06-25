@@ -1,7 +1,6 @@
 package keystrokesmod.script.packets.serverbound;
 
-import keystrokesmod.utility.Utils;
-import net.minecraft.network.play.client.C16PacketClientStatus;
+import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 
 public class C16 extends CPacket {
     public String status;
@@ -11,13 +10,16 @@ public class C16 extends CPacket {
         this.status = status;
     }
 
-    public C16(C16PacketClientStatus packet) {
+    public C16(ServerboundClientCommandPacket packet) {
         super(packet);
-        this.status = packet.getStatus().name();
+        this.status = "";
     }
 
     @Override
-    public C16PacketClientStatus convert() {
-        return new C16PacketClientStatus(Utils.getEnum(C16PacketClientStatus.EnumState.class, this.status));
+    public ServerboundClientCommandPacket convert() {
+        if (this.packet instanceof ServerboundClientCommandPacket commandPacket) {
+            return commandPacket;
+        }
+        return new ServerboundClientCommandPacket(ServerboundClientCommandPacket.Action.RESPAWN);
     }
 }

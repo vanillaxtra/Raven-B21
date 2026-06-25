@@ -5,16 +5,13 @@ import keystrokesmod.module.Module;
 import keystrokesmod.module.ModuleManager;
 import keystrokesmod.module.impl.client.Settings;
 import keystrokesmod.module.impl.combat.Velocity;
-import keystrokesmod.module.impl.minigames.DuelsStats;
 import keystrokesmod.module.impl.movement.BHop;
 import keystrokesmod.module.impl.movement.Fly;
 import keystrokesmod.module.impl.movement.Speed;
-import keystrokesmod.module.impl.other.FakeChat;
 import keystrokesmod.module.impl.other.NameHider;
 import keystrokesmod.utility.profile.Profile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.Font;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,12 +19,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Commands {
-    private static final Minecraft mc = Minecraft.getMinecraft();
     private static boolean f = true;
     private static final List<Integer> cs = Arrays.asList((new Color(170, 107, 148, 50)).getRGB(), (new Color(122, 158, 134, 50)).getRGB(), (new Color(16, 16, 16, 50)).getRGB(), (new Color(64, 114, 148, 50)).getRGB());
     private static int ccs = 0;
     private static int lccs = -1;
     public static List<String> rs = new ArrayList();
+    public static String nick = "";
     private static final String invSyn = "&cInvalid syntax.";
     private static final String invCom = "&cInvalid command.";
 
@@ -75,9 +72,9 @@ public class Commands {
                     return;
                 }
 
-                DuelsStats.nick = args[1];
+                nick = args[1];
                 print("&aNick has been set to:", 1);
-                print("\"" + DuelsStats.nick + "\"", 0);
+                print("\"" + nick + "\"", 0);
             }
             else if (cm.startsWith("cname")) {
                 if (!hasArgs) {
@@ -93,60 +90,6 @@ public class Commands {
                 NameHider.fakeName = args[1];
                 print("&a" + Utils.uf("name") + "Nick has been set to:".substring(4), 1);
                 print("\"" + NameHider.fakeName + "\"", 0);
-            }
-            else if (cm.startsWith(FakeChat.command)) {
-                if (!hasArgs) {
-                    print(invSyn, 1);
-                    return;
-                }
-
-                n = c.replaceFirst(FakeChat.command, "").substring(1);
-                if (n.isEmpty() || n.equals("\\n")) {
-                    print(FakeChat.c4, 1);
-                    return;
-                }
-
-                FakeChat.msg = n;
-                print("&aMessage set!", 1);
-            }
-            else if (cm.startsWith("Duels".toLowerCase())) {
-                if (!hasArgs) {
-                    print(invSyn, 1);
-                    return;
-                }
-
-                if (args.length != 2) {
-                    print(invSyn, 1);
-                    return;
-                }
-
-                if (NetworkUtils.API_KEY.isEmpty()) {
-                    print("&cAPI Key is empty!", 1);
-                    print("Use \"setkey [api_key]\".", 0);
-                    return;
-                }
-
-                n = args[1];
-                print("Retrieving data...", 1);
-                Raven.getScheduledExecutor().execute(() -> {
-                    int[] s = ProfileUtils.getHypixelStats(n, ProfileUtils.DM.OVERALL);
-                    if (s != null) {
-                        if (s[0] == -1) {
-                            print("&c" + (n.length() > 16 ? n.substring(0, 16) + "..." : n) + " does not exist!", 0);
-                        } else {
-                            double wlr = s[1] != 0 ? Utils.round((double) s[0] / (double) s[1], 2) : (double) s[0];
-                            print("&e" + n + " stats:", 1);
-                            print("Wins: " + s[0], 0);
-                            print("Losses: " + s[1], 0);
-                            print("WLR: " + wlr, 0);
-                            print("Winstreak: " + s[2], 0);
-                            print("Threat: " + DuelsStats.gtl(s[0], s[1], wlr, s[2]).substring(2), 0);
-                        }
-                    } else {
-                        print("&cThere was an error.", 0);
-                    }
-
-                });
             }
             else if (cm.startsWith("setspeed")) {
                 if (!hasArgs) {
@@ -175,10 +118,10 @@ public class Commands {
 
                 switch (args[1]) {
                     case "fly":
-                        Fly.horizontalSpeed.setValueRawWithEvent(value);
+                        Fly.speed.setValueRawWithEvent(value);
                         break;
                     case "bhop":
-                        BHop.speedSetting.setValueRawWithEvent(value);
+                        BHop.speed.setValueRawWithEvent(value);
                         break;
                     case "speed":
                         Speed.speed.setValueRawWithEvent(value);
@@ -417,10 +360,9 @@ public class Commands {
                 print("&eAvailable commands:", 1);
                 print("1 setkey [key]", 0);
                 print("2 friend/enemy [name/clear]", 0);
-                print("3 duels [player]", 0);
-                print("4 nick [name/reset]", 0);
-                print("5 ping", 0);
-                print("6 hide/show [module]", 0);
+                print("3 nick [name/reset]", 0);
+                print("4 ping", 0);
+                print("5 hide/show [module]", 0);
                 print("&eProfiles:", 0);
                 print("1 profiles", 0);
                 print("2 profiles save [profile]", 0);
@@ -428,10 +370,9 @@ public class Commands {
                 print("4 profiles remove [profile]", 0);
                 print("&eModule-specific:", 0);
                 print("1 cname [name]", 0);
-                print("2 " + FakeChat.command + " [msg]", 0);
-                print("3 setspeed [fly/bhop/speed] [value]", 0);
-                print("4 setvelocity [h/v] [value]", 0);
-                print("5 sprint [text]", 0);
+                print("2 setspeed [fly/bhop/speed] [value]", 0);
+                print("3 setvelocity [h/v] [value]", 0);
+                print("4 sprint [text]", 0);
             }
 
         }
@@ -448,20 +389,17 @@ public class Commands {
         }
     }
 
-    public static void rc(FontRenderer fr, int h, int w, double s) {
+    public static void rc(Font fr, int h, int w, double s) {
         int x = w - 195;
         int y = h - 130;
         int sY = h - 345;
         int sH = 230;
-        GL11.glEnable(3089);
         double mw = w * s;
-        GL11.glScissor(0, (int) (mc.displayHeight - (sY + sH) * s), (int) (mw - (mw < 2 ? 0 : 2)), (int) (sH * s - 2));
         RenderUtils.db(1000, 1000, ccs);
         rss(fr, rs, x, y);
-        GL11.glDisable(3089);
     }
 
-    private static void rss(FontRenderer fr, List<String> rs, int x, int y) {
+    private static void rss(Font fr, List<String> rs, int x, int y) {
         if (f) {
             f = false;
             print("Welcome,", 0);
@@ -483,8 +421,8 @@ public class Commands {
                     c = Color.yellow.getRGB();
                 }
 
-                fr.drawString(s, x, y, c);
-                y -= fr.FONT_HEIGHT + 5;
+                RenderUtils.drawStringWithShadow(s, x, y, c);
+                y -= fr.lineHeight + 5;
             }
 
         }

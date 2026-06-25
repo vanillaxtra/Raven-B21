@@ -8,7 +8,7 @@ import keystrokesmod.script.classes.Image;
 import keystrokesmod.script.classes.NetworkPlayer;
 import keystrokesmod.utility.Utils;
 import keystrokesmod.utility.profile.ProfileModule;
-import org.lwjgl.Sys;
+import keystrokesmod.utility.Mc;
 
 import java.awt.*;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class Manager extends Module {
             try {
                 Desktop.getDesktop().browse(new URI(documentationURL));
             } catch (Throwable t) {
-                Sys.openURL(documentationURL);
+                Utils.sendMessage("&cFailed to open documentation URL.");
             }
         }));
         this.canBeEnabled = false;

@@ -1,8 +1,7 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class PrePlayerInputEvent extends Event {
+public class PrePlayerInputEvent  {
     private float forward, strafe;
     private boolean jump, sneak;
     private double sneakSlowDownMultiplier;

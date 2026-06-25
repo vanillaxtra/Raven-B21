@@ -1,9 +1,9 @@
 package keystrokesmod.script.packets.clientbound;
 
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S3EPacketTeams;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerTeamPacket;
 
 import java.util.Collection;
+import java.util.List;
 
 public class S3E extends SPacket {
     public String name;
@@ -16,20 +16,20 @@ public class S3E extends SPacket {
     public int friendlyFlags;
     public int color;
 
-    public S3E(S3EPacketTeams packet) {
+    public S3E(ClientboundSetPlayerTeamPacket packet) {
         super(packet);
-        this.name = packet.getName();
-        this.displayName = packet.getDisplayName();
-        this.prefix = packet.getPrefix();
-        this.suffix = packet.getSuffix();
-        this.nametagVisibility = packet.getNameTagVisibility();
-        this.playerList = packet.getPlayers();
-        this.action = packet.getAction();
-        this.friendlyFlags = packet.getFriendlyFlags();
-        this.color = packet.getColor();
+        this.name = "";
+        this.displayName = "";
+        this.prefix = "";
+        this.suffix = "";
+        this.nametagVisibility = "";
+        this.playerList = List.of();
+        this.action = 0;
+        this.friendlyFlags = 0;
+        this.color = 0;
     }
 
-    public S3E(Packet packet, String name, String displayName, String prefix, String suffix, String nametagVisibility, Collection<String> playerList, int action, int friendlyFlags, int color) {
+    public S3E(net.minecraft.network.protocol.Packet<?> packet, String name, String displayName, String prefix, String suffix, String nametagVisibility, Collection<String> playerList, int action, int friendlyFlags, int color) {
         super(packet);
         this.name = name;
         this.displayName = displayName;

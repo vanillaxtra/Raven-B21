@@ -1,6 +1,7 @@
 package keystrokesmod.utility.command;
 
 import keystrokesmod.module.ModuleManager;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
 import net.minecraft.client.Minecraft;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public abstract class Command {
     protected String command;
     protected String[] alias;
-    public Minecraft mc = Minecraft.getMinecraft();
+    public Minecraft mc = Mc.mc();
 
     public Command(String command, String[] alias) {
         this.command = command;

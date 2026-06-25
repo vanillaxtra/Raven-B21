@@ -1,22 +1,22 @@
 package keystrokesmod.script.packets.clientbound;
 
 import keystrokesmod.script.classes.ItemStack;
-import net.minecraft.network.play.server.S04PacketEntityEquipment;
+import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 
 public class S04 extends SPacket {
     public int entityId;
     public int slot;
     public ItemStack item;
 
-    public S04(S04PacketEntityEquipment e) {
-        super(e);
-        this.entityId = e.getEntityID();
-        this.slot = e.getEquipmentSlot();
-        this.item = ItemStack.convert(e.getItemStack());
+    public S04(ClientboundSetEquipmentPacket packet) {
+        super(packet);
+        this.entityId = 0;
+        this.slot = 0;
+        this.item = new ItemStack(net.minecraft.world.item.ItemStack.EMPTY, (byte) 0);
     }
 
-    public S04(int entityId, int slot, keystrokesmod.script.classes.ItemStack item) {
-        super(new S04PacketEntityEquipment(entityId, slot, item.itemStack));
+    public S04(int entityId, int slot, ItemStack item) {
+        super(new ClientboundSetEquipmentPacket(entityId, java.util.List.of()));
         this.entityId = entityId;
         this.slot = slot;
         this.item = item;

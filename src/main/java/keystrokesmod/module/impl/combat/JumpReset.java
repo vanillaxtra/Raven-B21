@@ -2,10 +2,10 @@ package keystrokesmod.module.impl.combat;
 
 import keystrokesmod.event.JumpEvent;
 import keystrokesmod.event.PreInputEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.SliderSetting;
-import keystrokesmod.utility.Utils;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import keystrokesmod.utility.Mc;
 
 public class JumpReset extends Module {
     private SliderSetting chance;
@@ -25,37 +25,35 @@ public class JumpReset extends Module {
 
     @SubscribeEvent
     public void onPreInput(PreInputEvent e) {
-        if (Utils.nullCheck()) {
-            if (chance.getInput() == 0) {
-                return;
-            }
-            if (mc.thePlayer.maxHurtTime <= 0) {
-                jump = false;
-                return;
-            }
-            if (mc.thePlayer.hurtTime == mc.thePlayer.maxHurtTime) {
-                jump = true;
-            }
-            if (!jump || mc.thePlayer.hurtTime == 0) {
-                jump = false;
-                return;
-            }
-            if (chance.getInput() != 100.0D) {
-                double ch = Math.random();
-                if (ch >= chance.getInput() / 100.0D) {
-                    return;
-                }
-            }
-            if (jump && mc.thePlayer.onGround) {
-                mc.thePlayer.jump();
-                jump = false;
-            }
+        if (!Mc.nullCheck()) {
+            return;
+        }
+        if (chance.getInput() == 0) {
+            return;
+        }
+        if (mc.player.hurtDuration <= 0) {
+            jump = false;
+            return;
+        }
+        if (mc.player.hurtTime == mc.player.hurtDuration) {
+            jump = true;
+        }
+        if (!jump || mc.player.hurtTime == 0) {
+            jump = false;
+            return;
+        }
+        if (chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D) {
+            return;
+        }
+        if (jump && mc.player.onGround()) {
+            mc.player.jumpFromGround();
+            jump = false;
         }
     }
 
     @SubscribeEvent
     public void onJump(JumpEvent e) {
-        if (!Utils.nullCheck() || !jump) {
+        if (!Mc.nullCheck() || !jump) {
             return;
         }
         if (motion.getInput() != 0.42) {

@@ -15,4 +15,12 @@ public class Weather extends Module {
         this.registerSetting(lightning = new SliderSetting("Lightning", 0, 0, 1, 0.01));
         this.registerSetting(rain = new ButtonSetting("Rain", false));
     }
+
+    public boolean shouldForceRain() {
+        return isEnabled() && rain.isToggled();
+    }
+
+    public float getRainStrength() {
+        return isEnabled() ? (float) lightning.getInput() : -1f;
+    }
 }

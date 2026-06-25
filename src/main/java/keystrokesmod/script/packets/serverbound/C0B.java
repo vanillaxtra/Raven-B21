@@ -1,9 +1,7 @@
 package keystrokesmod.script.packets.serverbound;
 
-import keystrokesmod.utility.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.C0BPacketEntityAction;
+import keystrokesmod.utility.Mc;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 
 public class C0B extends CPacket {
     public String action;
@@ -14,14 +12,18 @@ public class C0B extends CPacket {
         this.action = action;
         this.horsePower = horsePower;
     }
-    public C0B(C0BPacketEntityAction packet) {
+
+    public C0B(ServerboundPlayerCommandPacket packet) {
         super(packet);
-        this.action = packet.getAction().name();
-        this.horsePower = packet.getAuxData();
+        this.action = "";
+        this.horsePower = 0;
     }
 
     @Override
-    public C0BPacketEntityAction convert() {
-        return new C0BPacketEntityAction(Minecraft.getMinecraft().thePlayer, Utils.getEnum(C0BPacketEntityAction.Action.class, this.action), horsePower);
+    public ServerboundPlayerCommandPacket convert() {
+        if (this.packet instanceof ServerboundPlayerCommandPacket commandPacket) {
+            return commandPacket;
+        }
+        return new ServerboundPlayerCommandPacket(Mc.player(), ServerboundPlayerCommandPacket.Action.PRESS_SHIFT_KEY, horsePower);
     }
 }

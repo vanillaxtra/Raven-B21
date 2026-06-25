@@ -1,9 +1,8 @@
 package keystrokesmod.event;
 
-import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraft.world.entity.Entity;
 
-public class AntiCheatFlagEvent extends Event {
+public class AntiCheatFlagEvent  {
     public String flag;
     public Entity entity;
 

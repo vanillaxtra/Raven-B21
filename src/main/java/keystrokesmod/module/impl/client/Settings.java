@@ -5,10 +5,9 @@ import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.DescriptionSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.resources.Identifier;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -23,22 +22,17 @@ public class Settings extends Module {
     public static ButtonSetting weaponStick;
     public static ButtonSetting middleClickFriends;
     public static ButtonSetting setChatAsInventory;
-
     public static ButtonSetting rotateBody;
     public static ButtonSetting fullBody;
-    public static ButtonSetting movementFix;
-    public static SliderSetting randomYawFactor;
-
     public static ButtonSetting loadGuiPositions;
     public static ButtonSetting sendMessage;
-
     public static SliderSetting offset;
     public static SliderSetting timeMultiplier;
     public static SliderSetting customThemeColor1;
     public static SliderSetting customThemeColor2;
 
-    private String[] capes = new String[] { "None", "Anime", "Aqua", "Green", "Purple", "Red", "White", "Yellow", "Myau", "Astolfo", "Vape", "Dash", "Anime2", "DreamySky", "RUBBAH", "Zambos" };
-    public static List<ResourceLocation> loadedCapes = new ArrayList<>();
+    private final String[] capes = new String[]{"None", "Anime", "Aqua", "Green", "Purple", "Red", "White", "Yellow", "Myau", "Astolfo", "Vape", "Dash", "Anime2", "DreamySky", "RUBBAH", "Zambos"};
+    public static List<Identifier> loadedCapes = new ArrayList<>();
 
     public Settings() {
         super("Settings", category.client, 0);
@@ -52,8 +46,6 @@ public class Settings extends Module {
         this.registerSetting(new DescriptionSetting("Rotations"));
         this.registerSetting(rotateBody = new ButtonSetting("Rotate body", true));
         this.registerSetting(fullBody = new ButtonSetting("Full body", false));
-        //this.registerSetting(movementFix = new ButtonSetting("Movement fix", false));
-        this.registerSetting(randomYawFactor = new SliderSetting("Random yaw factor", 1.0, 0.0, 10.0, 1.0));
         this.registerSetting(new DescriptionSetting("Profiles"));
         this.registerSetting(loadGuiPositions = new ButtonSetting("Load gui state", false));
         this.registerSetting(sendMessage = new ButtonSetting("Send message on enable", true));
@@ -77,22 +69,20 @@ public class Settings extends Module {
                 if (stream == null) {
                     continue;
                 }
-                BufferedImage bufferedImage = ImageIO.read(stream);
-                loadedCapes.add(mc.renderEngine.getDynamicTextureLocation(name, new DynamicTexture(bufferedImage)));
+                Identifier id = Identifier.fromNamespaceAndPath("keystrokesmod", "capes/" + name);
+                com.mojang.blaze3d.platform.NativeImage nativeImage = com.mojang.blaze3d.platform.NativeImage.read(stream);
+                mc.getTextureManager().register(id, new net.minecraft.client.renderer.texture.DynamicTexture(() -> id.toString(), nativeImage));
+                loadedCapes.add(id);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static boolean inInventory() {
-        if (mc.currentScreen instanceof GuiInventory) {
+        if (mc.screen instanceof InventoryScreen) {
             return true;
         }
-        if (mc.currentScreen instanceof GuiChat && setChatAsInventory.isToggled()) {
-            return true;
-        }
-        return false;
+        return mc.screen instanceof ChatScreen && setChatAsInventory.isToggled();
     }
 }

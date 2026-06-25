@@ -1,79 +1,67 @@
 package keystrokesmod.utility;
 
+import keystrokesmod.event.RavenEventBus;
+import keystrokesmod.event.RenderTickEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.ModuleManager;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.network.chat.Component;
 
 public class ScaffoldBlockCount {
-    private final Minecraft mc;
     private Timer fadeTimer;
     private Timer fadeInTimer;
     private float previousAlpha;
 
-    public ScaffoldBlockCount(Minecraft mc) {
-        this.mc = mc;
+    public ScaffoldBlockCount() {
         this.fadeTimer = null;
-        (this.fadeInTimer = new Timer(150)).start();
+        this.fadeInTimer = new Timer(150);
+        this.fadeInTimer.start();
     }
 
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent ev) {
+    public void onRenderTick(RenderTickEvent event) {
         if (previousAlpha <= 10 && fadeInTimer == null) {
             onDisable();
             return;
         }
-        if (!Utils.nullCheck() || !ModuleManager.scaffold.showBlockCount.isToggled()) {
+        if (!Mc.nullCheck() || !ModuleManager.scaffold.showBlockCount.isToggled()) {
             return;
         }
-        if (ev.phase == TickEvent.Phase.END) {
-            if (mc.currentScreen != null) {
-                return;
-            }
-            final ScaledResolution scaledResolution = new ScaledResolution(mc);
-            int blocks = ModuleManager.scaffold.totalBlocks();
-            String color = "§";
-            if (blocks <= 5) {
-                color += "c";
-            }
-            else if (blocks <= 15) {
-                color += "6";
-            }
-            else if (blocks <= 25) {
-                color += "e";
-            }
-            else {
-                color = "";
-            }
-            float alpha = fadeTimer == null ? 255 : (255 - fadeTimer.getValueInt(0, 255, 1));
-            if (fadeInTimer != null) {
-                alpha = fadeInTimer.getValueFloat(10, 255, 1);
-                if (alpha == 255) {
-                    fadeInTimer = null;
-                }
-            }
-            previousAlpha = alpha;
-            int colorAlpha = Utils.mergeAlpha(-1, (int) previousAlpha);
-            GL11.glPushMatrix();
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            mc.fontRendererObj.drawStringWithShadow(color + blocks + " §rblock" + (blocks == 1 ? "" : "s"), scaledResolution.getScaledWidth()/2 + 8, scaledResolution.getScaledHeight()/2 + 4, colorAlpha);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPopMatrix();
+        if (event.phase != RenderTickEvent.Phase.END || Mc.mc().screen != null) {
+            return;
         }
+        int blocks = ModuleManager.scaffold.totalBlocks();
+        String color = "Â§";
+        if (blocks <= 5) {
+            color += "c";
+        } else if (blocks <= 15) {
+            color += "6";
+        } else if (blocks <= 25) {
+            color += "e";
+        } else {
+            color = "";
+        }
+        float alpha = fadeTimer == null ? 255 : 255 - fadeTimer.getValueInt(0, 255, 1);
+        if (fadeInTimer != null) {
+            alpha = fadeInTimer.getValueFloat(10, 255, 1);
+            if (alpha == 255) {
+                fadeInTimer = null;
+            }
+        }
+        previousAlpha = alpha;
+        int colorAlpha = Utils.mergeAlpha(-1, (int) previousAlpha);
+        int x = Mc.mc().getWindow().getGuiScaledWidth() / 2 + 8;
+        int y = Mc.mc().getWindow().getGuiScaledHeight() / 2 + 4;
+        RenderUtils.drawStringWithShadow(color + blocks + " Â§rblock" + (blocks == 1 ? "" : "s"), x, y, colorAlpha);
     }
 
     public void beginFade() {
-        (this.fadeTimer = new Timer(150)).start();
+        this.fadeTimer = new Timer(150);
+        this.fadeTimer.start();
         this.fadeInTimer = null;
     }
 
     public void onDisable() {
-        MinecraftForge.EVENT_BUS.unregister(this);
+        RavenEventBus.unregister(this);
         fadeInTimer = null;
         fadeTimer = null;
     }

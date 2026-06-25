@@ -1,23 +1,22 @@
 package keystrokesmod.script.packets.clientbound;
 
 import keystrokesmod.script.classes.Block;
-import keystrokesmod.script.classes.Vec3;
-import net.minecraft.client.Minecraft;
-import net.minecraft.network.play.server.S23PacketBlockChange;
-import net.minecraft.util.BlockPos;
+import keystrokesmod.script.classes.ScriptVec3;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.core.BlockPos;
 
 public class S23 extends SPacket {
-    public Vec3 position;
+    public ScriptVec3 position;
     public Block block;
 
-    public S23(S23PacketBlockChange packet, byte f) {
+    public S23(ClientboundBlockUpdatePacket packet, byte f) {
         super(packet);
-        this.position = Vec3.convert(packet.getBlockPosition());
-        this.block = new Block(packet.getBlockState(), new BlockPos(position.x, position.y, position.z));
+        this.position = new ScriptVec3(0, 0, 0);
+        this.block = new Block(this.position);
     }
 
-    public S23(Vec3 position) {
-        super(new S23PacketBlockChange(Minecraft.getMinecraft().theWorld, Vec3.getBlockPos(position)));
+    public S23(ScriptVec3 position) {
+        super(new ClientboundBlockUpdatePacket(BlockPos.ZERO, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState()));
         this.position = position;
         this.block = new Block(position);
     }

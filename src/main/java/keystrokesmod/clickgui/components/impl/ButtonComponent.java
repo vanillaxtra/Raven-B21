@@ -2,17 +2,16 @@ package keystrokesmod.clickgui.components.impl;
 
 import keystrokesmod.Raven;
 import keystrokesmod.clickgui.components.Component;
-import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.profile.ProfileModule;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.awt.*;
 
 public class ButtonComponent extends Component {
     private final int enabledColor = (new Color(20, 255, 0)).getRGB();
-    private Module mod;
+    private keystrokesmod.module.Module mod;
     public ButtonSetting buttonSetting;
     private ModuleComponent p;
     public int o;
@@ -21,7 +20,7 @@ public class ButtonComponent extends Component {
     public int xOffset;
     public boolean renderLine;
 
-    public ButtonComponent(Module mod, ButtonSetting op, ModuleComponent b, int o) {
+    public ButtonComponent(keystrokesmod.module.Module mod, ButtonSetting op, ModuleComponent b, int o) {
         this.mod = mod;
         this.buttonSetting = op;
         this.p = b;
@@ -30,26 +29,30 @@ public class ButtonComponent extends Component {
         this.o = o;
     }
 
-    public void render() {
-        GL11.glPushMatrix();
-        GL11.glScaled(0.5D, 0.5D, 0.5D);
-        Minecraft.getMinecraft().fontRendererObj.drawString((this.buttonSetting.isMethodButton ? "[=]  " : (this.buttonSetting.isToggled() ? "[+]  " : "[-]  ")) + this.buttonSetting.getName(), (float) ((this.p.categoryComponent.getX() + 4) * 2) + xOffset, (float) ((this.p.categoryComponent.getY() + this.o + 4) * 2), this.buttonSetting.isToggled() ? this.enabledColor : -1, false);
-        GL11.glScaled(1, 1, 1);
-        if (renderLine) {
-            //RenderUtils.drawRectangleGL((float) ((this.p.categoryComponent.getX() + 4) * 2), (float) ((this.p.categoryComponent.getY() + this.o) * 2), (float) ((this.p.categoryComponent.getX() + 4) * 2) + 1, (float) ((this.p.categoryComponent.getY() + this.o + 4) * 2) + 16, new Color(192, 192, 192).getRGB());
-        }
-        GL11.glPopMatrix();
+    @Override
+    public void render(GuiGraphics context) {
+        var textRenderer = Mc.mc().font;
+        context.pose().pushMatrix();
+        context.pose().scale(0.5f, 0.5f);
+        String prefix = this.buttonSetting.isMethodButton ? "[=]  " : (this.buttonSetting.isToggled() ? "[+]  " : "[-]  ");
+        context.drawString(textRenderer, prefix + this.buttonSetting.getName(),
+                (this.p.categoryComponent.getX() + 4) * 2 + xOffset,
+                (this.p.categoryComponent.getY() + this.o + 4) * 2,
+                this.buttonSetting.isToggled() ? this.enabledColor : -1, false);
+        context.pose().popMatrix();
     }
 
     public void updateHeight(int n) {
         this.o = n;
     }
 
+    @Override
     public void drawScreen(int x, int y) {
         this.y = this.p.categoryComponent.getModuleY() + this.o;
         this.x = this.p.categoryComponent.getX();
     }
 
+    @Override
     public boolean onClick(int x, int y, int b) {
         if (this.i(x, y) && b == 0 && this.p.isOpened && this.visible && this.buttonSetting.visible) {
             if (this.buttonSetting.isMethodButton) {

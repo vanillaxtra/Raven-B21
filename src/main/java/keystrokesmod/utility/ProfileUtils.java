@@ -4,92 +4,89 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class ProfileUtils {
-    public static String getMojangProfile(String n) {
-        String result = "";
-        String response = NetworkUtils.getTextFromURL("https://api.mojang.com/users/profiles/minecraft/" + n, false, false);
-        if (!response.isEmpty()) {
-            try {
-                result = response.split("d\":\"")[1].split("\"")[0];
-            } catch (ArrayIndexOutOfBoundsException var4) {
-            }
+    public static String getMojangProfile(String name) {
+        String response = NetworkUtils.getTextFromURL("https://api.mojang.com/users/profiles/minecraft/" + name, false, false);
+        if (response.isEmpty()) {
+            return "";
         }
-
-        return result;
+        try {
+            JsonObject json = JsonParser.parseString(response).getAsJsonObject();
+            return json.has("id") ? json.get("id").getAsString() : "";
+        } catch (Exception ignored) {
+            return "";
+        }
     }
 
-    public static int[] getHypixelStats(String playerName, ProfileUtils.DM dm) {
-        int[] s = new int[]{0, 0, 0};
-        String u = getMojangProfile(playerName);
-        if (u.isEmpty()) {
-            s[0] = -1;
-            return s;
-        } else {
-            String c = NetworkUtils.getTextFromURL("https://api.hypixel.net/player?key=" + NetworkUtils.API_KEY + "&uuid=" + u, false, false);
-            if (c.isEmpty()) {
-                return null;
-            } else if (c.equals("{\"success\":true,\"player\":null}")) {
-                s[0] = -1;
-                return s;
-            } else {
-                JsonObject d;
-                try {
-                    JsonObject pr = parseJson(c).getAsJsonObject("player");
-                    d = pr.getAsJsonObject("stats").getAsJsonObject("Duels");
-                } catch (NullPointerException var8) {
-                    return s;
-                }
-
-                switch (dm) {
-                    case OVERALL:
-                        s[0] = getValueAsInt(d, "wins");
-                        s[1] = getValueAsInt(d, "losses");
-                        s[2] = getValueAsInt(d, "current_winstreak");
-                        break;
-                    case BRIDGE:
-                        s[0] = getValueAsInt(d, "bridge_duel_wins");
-                        s[1] = getValueAsInt(d, "bridge_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_bridge_duel");
-                        break;
-                    case UHC:
-                        s[0] = getValueAsInt(d, "uhc_duel_wins");
-                        s[1] = getValueAsInt(d, "uhc_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_uhc_duel");
-                        break;
-                    case SKYWARS:
-                        s[0] = getValueAsInt(d, "sw_duel_wins");
-                        s[1] = getValueAsInt(d, "sw_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_sw_duel");
-                        break;
-                    case CLASSIC:
-                        s[0] = getValueAsInt(d, "classic_duel_wins");
-                        s[1] = getValueAsInt(d, "classic_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_classic_duel");
-                        break;
-                    case SUMO:
-                        s[0] = getValueAsInt(d, "sumo_duel_wins");
-                        s[1] = getValueAsInt(d, "sumo_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_sumo_duel");
-                        break;
-                    case OP:
-                        s[0] = getValueAsInt(d, "op_duel_wins");
-                        s[1] = getValueAsInt(d, "op_duel_losses");
-                        s[2] = getValueAsInt(d, "current_winstreak_mode_op_duel");
-                }
-
-                return s;
+    public static int[] getHypixelStats(String playerName, DM mode) {
+        int[] stats = new int[]{0, 0, 0};
+        String uuid = getMojangProfile(playerName);
+        if (uuid.isEmpty()) {
+            stats[0] = -1;
+            return stats;
+        }
+        String body = NetworkUtils.getTextFromURL("https://api.hypixel.net/player?key=" + NetworkUtils.API_KEY + "&uuid=" + uuid, false, false);
+        if (body.isEmpty()) {
+            return null;
+        }
+        if (body.equals("{\"success\":true,\"player\":null}")) {
+            stats[0] = -1;
+            return stats;
+        }
+        JsonObject duels;
+        try {
+            JsonObject player = parseJson(body).getAsJsonObject("player");
+            duels = player.getAsJsonObject("stats").getAsJsonObject("Duels");
+        } catch (NullPointerException ignored) {
+            return stats;
+        }
+        switch (mode) {
+            case OVERALL -> {
+                stats[0] = getValueAsInt(duels, "wins");
+                stats[1] = getValueAsInt(duels, "losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak");
+            }
+            case BRIDGE -> {
+                stats[0] = getValueAsInt(duels, "bridge_duel_wins");
+                stats[1] = getValueAsInt(duels, "bridge_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_bridge_duel");
+            }
+            case UHC -> {
+                stats[0] = getValueAsInt(duels, "uhc_duel_wins");
+                stats[1] = getValueAsInt(duels, "uhc_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_uhc_duel");
+            }
+            case SKYWARS -> {
+                stats[0] = getValueAsInt(duels, "sw_duel_wins");
+                stats[1] = getValueAsInt(duels, "sw_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_sw_duel");
+            }
+            case CLASSIC -> {
+                stats[0] = getValueAsInt(duels, "classic_duel_wins");
+                stats[1] = getValueAsInt(duels, "classic_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_classic_duel");
+            }
+            case SUMO -> {
+                stats[0] = getValueAsInt(duels, "sumo_duel_wins");
+                stats[1] = getValueAsInt(duels, "sumo_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_sumo_duel");
+            }
+            case OP -> {
+                stats[0] = getValueAsInt(duels, "op_duel_wins");
+                stats[1] = getValueAsInt(duels, "op_duel_losses");
+                stats[2] = getValueAsInt(duels, "current_winstreak_mode_op_duel");
             }
         }
+        return stats;
     }
 
     public static JsonObject parseJson(String json) {
-        return (new JsonParser()).parse(json).getAsJsonObject();
+        return JsonParser.parseString(json).getAsJsonObject();
     }
 
     private static int getValueAsInt(JsonObject jsonObject, String key) {
         try {
             return jsonObject.get(key).getAsInt();
-        }
-        catch (NullPointerException var3) {
+        } catch (NullPointerException ignored) {
             return 0;
         }
     }
@@ -101,6 +98,6 @@ public class ProfileUtils {
         SKYWARS,
         CLASSIC,
         SUMO,
-        OP;
+        OP
     }
 }

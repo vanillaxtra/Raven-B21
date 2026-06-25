@@ -1,6 +1,6 @@
 package keystrokesmod.script.packets.serverbound;
 
-import net.minecraft.network.play.client.C09PacketHeldItemChange;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 
 public class C09 extends CPacket {
     public int slot;
@@ -10,13 +10,13 @@ public class C09 extends CPacket {
         this.slot = slot;
     }
 
-    public C09(C09PacketHeldItemChange packet, boolean identifier) {
+    public C09(ServerboundSetCarriedItemPacket packet, boolean identifier) {
         super(packet);
-        this.slot = packet.getSlotId();
+        this.slot = packet.getSlot();
     }
 
     @Override
-    public C09PacketHeldItemChange convert() {
-        return new C09PacketHeldItemChange(this.slot);
+    public ServerboundSetCarriedItemPacket convert() {
+        return new ServerboundSetCarriedItemPacket(this.slot);
     }
 }

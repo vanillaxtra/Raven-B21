@@ -2,7 +2,6 @@ package keystrokesmod.script;
 
 import keystrokesmod.Raven;
 import keystrokesmod.utility.Utils;
-import net.minecraft.launchwrapper.Launch;
 
 import javax.tools.StandardJavaFileManager;
 import java.io.File;
@@ -14,7 +13,7 @@ import java.util.*;
 
 public class Script {
     public String name;
-    public Class asClass;
+    public Class<?> asClass;
     public Object classObject;
     public String scriptName;
     public String codeStr;
@@ -34,7 +33,7 @@ public class Script {
                 return false;
             }
             final File file = new File(Raven.scriptManager.COMPILED_DIR);
-            if (!file.exists() || !file.isDirectory()) {
+            if (!file.exists() && !file.isDirectory()) {
                 file.mkdir();
             }
             if (Raven.scriptManager.compiler == null) {
@@ -46,36 +45,32 @@ public class Script {
             compilationOptions.add("-d");
             compilationOptions.add(Raven.scriptManager.COMPILED_DIR);
             compilationOptions.add("-XDuseUnsharedTable");
-            if (!(boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment")) {
-                compilationOptions.add("-classpath");
-                String s = Raven.scriptManager.jarPath;
-                try {
-                    s = URLDecoder.decode(s, "UTF-8");
-                }
-                catch (UnsupportedOperationException ex2) {}
-                compilationOptions.add(s);
+            compilationOptions.add("-classpath");
+            String s = Raven.scriptManager.jarPath;
+            try {
+                s = URLDecoder.decode(s, "UTF-8");
+            } catch (UnsupportedOperationException ignored) {
             }
+            compilationOptions.add(s);
             boolean success = Raven.scriptManager.compiler.getTask(null, fileManager, bp, compilationOptions, null, Arrays.asList(new ClassObject(this.scriptName, this.codeStr, this.STARTING_LINE))).call();
             if (!success) {
                 this.error = true;
                 return false;
             }
             try {
-                final SecureClassLoader secureClassLoader = new SecureClassLoader(new URL[]{file.toURI().toURL()}, Launch.classLoader);
+                final SecureClassLoader secureClassLoader = new SecureClassLoader(new URL[]{file.toURI().toURL()}, Thread.currentThread().getContextClassLoader());
                 this.asClass = secureClassLoader.loadClass(this.scriptName);
-                this.classObject = this.asClass.newInstance();
+                this.classObject = this.asClass.getDeclaredConstructor().newInstance();
                 secureClassLoader.close();
                 fileManager.close();
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 Utils.sendMessage("&7Script &b" + Utils.extractFileName(this.name) + " &7blocked, &cunsafe code&7 detected!");
                 this.error = true;
                 return false;
             }
             return true;
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.error = true;
             return !error;
         }
@@ -97,16 +92,14 @@ public class Script {
                 method.setAccessible(true);
                 final Object invoke = method.invoke(this.classObject, array);
                 if (invoke instanceof Boolean) {
-                    return ((boolean)invoke) ? 1 : 0;
+                    return ((boolean) invoke) ? 1 : 0;
                 }
-            }
-            catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 ReflectiveOperationException er = ex;
                 Utils.sendMessage("&7Runtime error during script &b" + this.name);
                 if (er.getCause() == null) {
                     Utils.sendMessage(" &7err: &cThrowable");
-                }
-                else {
+                } else {
                     Utils.sendMessage(" &7err: &c" + er.getCause().getClass().getSimpleName());
                     final StackTraceElement[] stArr = er.getCause().getStackTrace();
                     if (stArr.length > 0) {
@@ -167,14 +160,12 @@ public class Script {
                 method.setAccessible(true);
                 method.invoke(this.classObject, array);
                 return true;
-            }
-            catch (IllegalAccessException | InvocationTargetException ex) {
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 ReflectiveOperationException er = ex;
                 Utils.sendMessage("&7Runtime error during script &b" + this.name);
                 if (er.getCause() == null) {
                     Utils.sendMessage(" &7err: &cThrowable");
-                }
-                else {
+                } else {
                     Utils.sendMessage(" &7err: &c" + er.getCause().getClass().getSimpleName());
                     final StackTraceElement[] stArr = er.getCause().getStackTrace();
                     if (stArr.length > 0) {

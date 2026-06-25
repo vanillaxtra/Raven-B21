@@ -1,12 +1,13 @@
 package keystrokesmod.module.impl.other;
 
 import keystrokesmod.event.ReceivePacketEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.DescriptionSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class LatencyAlerts extends Module {
     private ButtonSetting ignoreLimbo;
     private long lastPacket;
     private long lastAlert;
+
     public LatencyAlerts() {
         super("Latency Alerts", category.other);
         this.registerSetting(new DescriptionSetting("Detects packet loss."));
@@ -31,15 +33,18 @@ public class LatencyAlerts extends Module {
     }
 
     public void onUpdate() {
-        if (mc.isSingleplayer() || (ignoreLimbo.isToggled() && inLimbo())) {
+        if (!Mc.nullCheck()) {
+            return;
+        }
+        if (mc.hasSingleplayerServer() || (ignoreLimbo.isToggled() && inLimbo())) {
             lastPacket = System.currentTimeMillis();
             lastAlert = System.currentTimeMillis();
             return;
         }
-        long currentMs = System.currentTimeMillis();
-        if (currentMs - lastPacket >= highLatency.getInput() * 1000 && currentMs - lastAlert >= interval.getInput() * 1000) {
-            Utils.sendMessage("&7Packet loss detected: " + "§c" + Math.abs(System.currentTimeMillis() - lastPacket) + "&7ms");
-            lastAlert = System.currentTimeMillis();
+        long now = System.currentTimeMillis();
+        if (now - lastPacket >= highLatency.getInput() * 1000 && now - lastAlert >= interval.getInput() * 1000) {
+            Utils.sendMessage("&7Packet loss detected: §c" + Math.abs(now - lastPacket) + "&7ms");
+            lastAlert = now;
         }
     }
 
@@ -55,9 +60,7 @@ public class LatencyAlerts extends Module {
     public boolean inLimbo() {
         List<String> scoreboard = Utils.getSidebarLines();
         if (scoreboard == null || scoreboard.isEmpty()) {
-            if (mc.theWorld.provider.getDimensionName().equals("The End")) {
-                return true;
-            }
+            return mc.level.dimension().identifier().getPath().contains("end");
         }
         return false;
     }

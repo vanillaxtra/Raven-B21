@@ -1,13 +1,14 @@
 package keystrokesmod.module.impl.combat;
 
+import keystrokesmod.event.AttackEntityEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.HashMap;
 
@@ -16,6 +17,7 @@ public class WTap extends Module {
     private ButtonSetting playersOnly;
     private final HashMap<Integer, Long> targets = new HashMap<>();
     public static boolean stopSprint = false;
+
     public WTap() {
         super("WTap", category.combat);
         this.registerSetting(chance = new SliderSetting("Chance", "%", 100, 0, 100, 1));
@@ -25,44 +27,40 @@ public class WTap extends Module {
 
     @SubscribeEvent
     public void onAttack(AttackEntityEvent event) {
-        if (!Utils.nullCheck() || event.entityPlayer != mc.thePlayer || !mc.thePlayer.isSprinting()) {
+        if (!Mc.nullCheck() || event.player != mc.player || !mc.player.isSprinting()) {
             return;
         }
         if (chance.getInput() == 0) {
             return;
         }
         if (playersOnly.isToggled()) {
-            if (!(event.target instanceof EntityPlayer)) {
+            if (!(event.target instanceof Player player)) {
                 return;
             }
-            final EntityPlayer entityPlayer = (EntityPlayer)event.target;
-            if (entityPlayer.maxHurtTime == 0 || entityPlayer.hurtTime > 3) {
+            if (player.hurtDuration == 0 || player.hurtTime > 3) {
                 return;
             }
-        }
-        else if (!(event.target instanceof EntityLivingBase)) {
+        } else if (!(event.target instanceof LivingEntity)) {
             return;
         }
-        if (((EntityLivingBase)event.target).deathTime != 0) {
+        LivingEntity living = (LivingEntity) event.target;
+        if (!living.isAlive()) {
             return;
         }
-        final long currentTimeMillis = System.currentTimeMillis();
-        final Long n = this.targets.get(event.target.getEntityId());
-        if (n != null && Utils.timeBetween(n, currentTimeMillis) <= 200L) {
+        long now = System.currentTimeMillis();
+        Long last = targets.get(event.target.getId());
+        if (last != null && Utils.timeBetween(last, now) <= 200L) {
             return;
         }
-        if (chance.getInput() != 100.0D) {
-            double ch = Math.random();
-            if (ch >= chance.getInput() / 100.0D) {
-                return;
-            }
+        if (chance.getInput() != 100.0D && Math.random() >= chance.getInput() / 100.0D) {
+            return;
         }
-        this.targets.put(event.target.getEntityId(), currentTimeMillis);
+        targets.put(event.target.getId(), now);
         stopSprint = true;
     }
 
     public void onDisable() {
         stopSprint = false;
-        this.targets.clear();
+        targets.clear();
     }
 }

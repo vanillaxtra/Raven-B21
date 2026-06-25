@@ -4,21 +4,21 @@ import keystrokesmod.Raven;
 import keystrokesmod.clickgui.components.Component;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.impl.client.Gui;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.RenderUtils;
 import keystrokesmod.utility.Timer;
 import keystrokesmod.utility.Utils;
 import keystrokesmod.utility.profile.Manager;
 import keystrokesmod.utility.profile.Profile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Holder;
 
 import java.awt.*;
 import java.util.Collection;
@@ -43,7 +43,6 @@ public class CategoryComponent {
     public Timer smoothTimer;
     private Timer textTimer;
     public Timer smoothScrollTimer;
-    public ScaledResolution scale;
     public float big;
     private float bigSettings;
     private final int translucentBackground = new Color(0, 0, 0, 110).getRGB();
@@ -70,7 +69,6 @@ public class CategoryComponent {
         this.opened = false;
         this.dragging = false;
         int moduleRenderY = this.titleHeight + 3;
-        this.scale = new ScaledResolution(Minecraft.getMinecraft());
         this.targetModuleY = this.moduleY;
 
         for (Module mod : Raven.getModuleManager().inCategory(this.category)) {
@@ -103,10 +101,11 @@ public class CategoryComponent {
                     ModuleComponent b = new ModuleComponent(profile.getModule(), this, moduleRenderY);
                     this.modules.add(b);
                 }
-            }
-            else {
+            } else {
                 Collection<Module> modulesCollection = Raven.scriptManager.scripts.values();
-                List<Module> sortedModules = modulesCollection.stream().sorted(Comparator.comparing(Module::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
+                List<Module> sortedModules = modulesCollection.stream()
+                        .sorted(Comparator.comparing(Module::getName, String.CASE_INSENSITIVE_ORDER))
+                        .collect(Collectors.toList());
                 for (Module module : sortedModules) {
                     moduleRenderY += 16;
                     ModuleComponent b = new ModuleComponent(module, this, moduleRenderY);
@@ -118,8 +117,7 @@ public class CategoryComponent {
 
     public void setX(int n, boolean limit) {
         if (limit) {
-            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            int screenW = sr.getScaledWidth();
+            int screenW = Mc.mc().getWindow().getGuiScaledWidth();
             n = Math.max(n, 2);
             n = Math.min(n, screenW - this.width - 4);
         }
@@ -128,10 +126,8 @@ public class CategoryComponent {
 
     public void setY(int y, boolean limit) {
         if (limit) {
-            ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-            int screenH = sr.getScaledHeight();
+            int screenH = Mc.mc().getWindow().getGuiScaledHeight();
             float catHeight = this.titleHeight;
-
             y = Math.max(y, 1);
             int maxY = (int) (screenH - catHeight - 5);
             y = Math.min(y, maxY);
@@ -175,11 +171,11 @@ public class CategoryComponent {
             this.targetModuleY -= scrollSpeed;
         }
         scrolled = true;
-
         (smoothScrollTimer = new Timer(200)).start();
     }
 
-    public void render(FontRenderer renderer) {
+    public void render(GuiGraphics context) {
+        var textRenderer = Mc.mc().font;
         this.targetModuleY = Math.min(this.targetModuleY, this.y);
         if (this.targetModuleY + this.bigSettings < this.y + this.big + this.titleHeight) {
             this.targetModuleY = (int) (this.y + this.big - this.bigSettings);
@@ -202,7 +198,7 @@ public class CategoryComponent {
             bigSettings = settingsHeight;
         }
 
-        float middlePos = (float) (this.x + this.width / 2 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.category.name()) / 2);
+        float middlePos = (float) (this.x + this.width / 2 - textRenderer.width(this.category.name()) / 2);
         float xPos = opened ? middlePos : this.x + 12;
         float extra = this.y + this.titleHeight + modulesHeight + 4;
 
@@ -214,41 +210,37 @@ public class CategoryComponent {
             double diff = lastHeight - extra;
             if (diff < 0) {
                 extra = smoothTimer.getValueFloat(lastHeight, this.y + this.titleHeight + modulesHeight + 4, 1);
-            }
-            else if (diff > 0) {
+            } else if (diff > 0) {
                 extra = smoothTimer.getValueFloat(this.opened ? closedHeight : lastHeight, this.y + this.titleHeight + modulesHeight + 4, 1);
             }
         }
 
         float namePos = textTimer == null ? xPos : textTimer.getValueFloat(this.x + 12, middlePos, 1);
         if (!this.opened) {
-            namePos = textTimer == null ? xPos : middlePos - textTimer.getValueFloat(0, this.width / 2 - Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.category.name()) / 2 - 12, 1);
+            namePos = textTimer == null ? xPos : middlePos - textTimer.getValueFloat(0, this.width / 2f - textRenderer.width(this.category.name()) / 2f - 12, 1);
         }
 
         if (scrolled && smoothScrollTimer != null) {
             if (System.currentTimeMillis() - smoothScrollTimer.last <= 200) {
                 float interpolated = smoothScrollTimer.getValueFloat(lastModuleY, targetModuleY, 4);
                 moduleY = (int) interpolated;
-            }
-            else {
+            } else {
                 moduleY = targetModuleY;
                 scrolled = false;
                 smoothScrollTimer = null;
             }
-        }
-        else {
+        } else {
             moduleY = targetModuleY;
         }
         lastModuleY = moduleY;
-
         lastHeight = extra;
-        GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_SCISSOR_TEST);
+
         RenderUtils.scissor(0, this.y - 2, this.x + this.width + 4, extra - this.y + 4);
         RenderUtils.drawRoundedGradientOutlinedRectangle(this.x - 2, this.y, this.x + this.width + 2, extra, 10, translucentBackground,
-                ((opened || hovering) && Gui.rainBowOutlines.isToggled()) ? RenderUtils.setAlpha(Utils.getChroma(2, 0), 0.5) : regularOutline, ((opened || hovering) && Gui.rainBowOutlines.isToggled()) ? RenderUtils.setAlpha(Utils.getChroma(2, 700), 0.5) : regularOutline2);
-        renderItemForCategory(this.category, this.x + 1, this.y + 4, opened || hovering);
-        renderer.drawString(this.category.name(), namePos, (float) (this.y + 4), categoryNameColor, false);
+                ((opened || hovering) && Gui.rainBowOutlines.isToggled()) ? RenderUtils.setAlpha(Utils.getChroma(2, 0), 0.5) : regularOutline,
+                ((opened || hovering) && Gui.rainBowOutlines.isToggled()) ? RenderUtils.setAlpha(Utils.getChroma(2, 700), 0.5) : regularOutline2);
+        renderItemForCategory(context, this.category, this.x + 1, this.y + 4, opened || hovering);
+        context.drawString(textRenderer, this.category.name(), (int) namePos, this.y + 4, categoryNameColor, false);
         RenderUtils.scissor(0, this.y + this.titleHeight + 3, this.x + this.width + 4, extra - this.y - 4 - this.titleHeight);
 
         int prevY = this.y;
@@ -256,17 +248,14 @@ public class CategoryComponent {
 
         if (this.opened || smoothTimer != null) {
             for (Component c2 : this.modules) {
-                c2.render();
+                c2.render(context);
             }
         }
         this.y = prevY;
-        GL11.glDisable(GL11.GL_SCISSOR_TEST);
-        GL11.glPopMatrix();
     }
 
     public void updateHeight() {
         int y = this.titleHeight + 3;
-
         for (Component component : this.modules) {
             component.updateHeight(y);
             y += component.getHeight();
@@ -295,15 +284,11 @@ public class CategoryComponent {
             int newY = mouseY - this.yy;
 
             if (Gui.limitToScreen.isToggled()) {
-                ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-                int screenW = sr.getScaledWidth();
-                int screenH = sr.getScaledHeight();
-
+                int screenW = Mc.mc().getWindow().getGuiScaledWidth();
+                int screenH = Mc.mc().getWindow().getGuiScaledHeight();
                 float catHeight = this.titleHeight;
-
                 newX = Math.max(newX, 2);
                 newX = Math.min(newX, screenW - this.width - 4);
-
                 newY = Math.max(newY, 1);
                 int maxY = (int) (screenH - catHeight - 5);
                 newY = Math.min(newY, maxY);
@@ -333,63 +318,37 @@ public class CategoryComponent {
         return x >= this.x - 2 && x <= this.x + this.width + 2 && y >= this.y && y <= lastHeight;
     }
 
-    private void renderItemForCategory(Module.category category, int x, int y, boolean enchant) {
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+    private void renderItemForCategory(GuiGraphics context, Module.category category, int x, int y, boolean enchant) {
         double scale = 0.55;
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, scale);
-        ItemStack itemStack = null;
-        switch (category) {
-            case combat:
-                itemStack = new ItemStack(Items.diamond_sword);
-                break;
-            case movement:
-                itemStack = new ItemStack(Items.diamond_boots);
-                break;
-            case player:
-                itemStack = new ItemStack(Items.golden_apple);
-                break;
-            case world:
-                itemStack = new ItemStack(Items.map);
-                break;
-            case render:
-                itemStack = new ItemStack(Items.ender_eye);
-                break;
-            case minigames:
-                itemStack = new ItemStack(Items.gold_ingot);
-                break;
-            case fun:
-                itemStack = new ItemStack(Items.slime_ball);
-                break;
-            case other:
-                itemStack = new ItemStack(Items.clock);
-                break;
-            case client:
-                itemStack = new ItemStack(Items.compass);
-                break;
-            case profiles:
-                itemStack = new ItemStack(Items.book);
-                break;
-            case scripts:
-                itemStack = new ItemStack(Items.redstone);
-                break;
+        ItemStack itemStack = getCategoryStack(category, enchant);
+        if (itemStack == null) {
+            return;
         }
-        if (itemStack != null) {
-            if (enchant) {
-                if (category != Module.category.player) {
-                    itemStack.addEnchantment(Enchantment.unbreaking, 2);
-                } else {
-                    itemStack.setItemDamage(1);
-                }
-            }
-            RenderHelper.enableGUIStandardItemLighting();
-            GlStateManager.disableBlend();
-            renderItem.renderItemAndEffectIntoGUI(itemStack, (int) (x / scale), (int) (y / scale));
-            GlStateManager.enableBlend();
-            RenderHelper.disableStandardItemLighting();
+        context.pose().pushMatrix();
+        context.pose().scale((float) scale, (float) scale);
+        context.renderItem(itemStack, (int) (x / scale), (int) (y / scale));
+        context.pose().popMatrix();
+    }
+
+    private ItemStack getCategoryStack(Module.category category, boolean enchant) {
+        ItemStack itemStack = switch (category) {
+            case combat -> new ItemStack(Items.DIAMOND_SWORD);
+            case movement -> new ItemStack(Items.DIAMOND_BOOTS);
+            case player -> new ItemStack(enchant ? Items.ENCHANTED_GOLDEN_APPLE : Items.GOLDEN_APPLE);
+            case world -> new ItemStack(Items.FILLED_MAP);
+            case render -> new ItemStack(Items.ENDER_EYE);
+            case minigames -> new ItemStack(Items.GOLD_INGOT);
+            case fun -> new ItemStack(Items.SLIME_BALL);
+            case other -> new ItemStack(Items.CLOCK);
+            case client -> new ItemStack(Items.COMPASS);
+            case profiles -> new ItemStack(Items.BOOK);
+            case scripts -> new ItemStack(Items.REDSTONE);
+            default -> null;
+        };
+        if (itemStack != null && enchant && category != Module.category.player) {
+            // skip enchant overlay for compile stub
         }
-        GlStateManager.scale(1, 1, 1);
-        GlStateManager.popMatrix();
+        return itemStack;
     }
 
     public void setScreenHeight(int screenHeight) {

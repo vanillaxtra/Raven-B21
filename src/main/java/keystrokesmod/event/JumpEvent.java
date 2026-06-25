@@ -1,10 +1,6 @@
 package keystrokesmod.event;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
-import net.minecraftforge.fml.common.eventhandler.Event;
-
-@Cancelable
-public class JumpEvent extends Event {
+public class JumpEvent extends CancelableEvent {
     private float motionY, yaw;
     private boolean applySprint;
 

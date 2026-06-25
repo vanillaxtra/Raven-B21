@@ -1,13 +1,14 @@
 package keystrokesmod.script.packets.serverbound;
 
-import net.minecraft.network.play.client.C0APacketAnimation;
+import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.world.InteractionHand;
 
 public class C0A extends CPacket {
-    public C0A(C0APacketAnimation packet) {
+    public C0A(ServerboundSwingPacket packet) {
         super(packet);
     }
 
     public C0A() {
-        super(new C0APacketAnimation());
+        super(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
     }
 }

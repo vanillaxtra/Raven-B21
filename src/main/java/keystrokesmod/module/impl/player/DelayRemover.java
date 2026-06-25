@@ -1,15 +1,15 @@
 package keystrokesmod.module.impl.player;
 
-import keystrokesmod.mixin.impl.accessor.IAccessorEntityLivingBase;
-import keystrokesmod.mixin.impl.accessor.IAccessorMinecraft;
+import keystrokesmod.event.ClientTickEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
-import keystrokesmod.utility.Utils;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import keystrokesmod.mixin.impl.accessor.IAccessorLivingEntity;
+import keystrokesmod.utility.Mc;
 
 public class DelayRemover extends Module {
-    public ButtonSetting oldReg, removeJumpTicks;
+    public ButtonSetting oldReg;
+    public ButtonSetting removeJumpTicks;
 
     public DelayRemover() {
         super("Delay Remover", category.player, 0);
@@ -19,15 +19,15 @@ public class DelayRemover extends Module {
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent.PlayerTickEvent e) {
-        if (e.phase != TickEvent.Phase.END || !mc.inGameHasFocus || !Utils.nullCheck()) {
+    public void onTick(ClientTickEvent e) {
+        if (e.phase != ClientTickEvent.Phase.END || !Mc.nullCheck()) {
             return;
         }
         if (oldReg.isToggled()) {
-            ((IAccessorMinecraft) mc).setLeftClickCounter(0);
+            mc.options.keyAttack.setDown(true);
         }
         if (removeJumpTicks.isToggled()) {
-            ((IAccessorEntityLivingBase) mc.thePlayer).setJumpTicks(0);
+            ((IAccessorLivingEntity) mc.player).setNoJumpDelay(0);
         }
     }
 }

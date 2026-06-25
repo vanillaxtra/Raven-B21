@@ -1,24 +1,22 @@
 package keystrokesmod.utility;
 
-import keystrokesmod.Raven;
 import keystrokesmod.event.PostUpdateEvent;
 import keystrokesmod.event.ReceivePacketEvent;
 import keystrokesmod.event.SendPacketEvent;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.client.*;
-import net.minecraft.network.play.server.S09PacketHeldItemChange;
-import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import keystrokesmod.event.SubscribeEvent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ServerboundSwingPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
+import net.minecraft.network.protocol.game.ClientboundLoginPacket;
+import net.minecraft.network.protocol.game.ClientboundSetHeldSlotPacket;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PacketsHandler {
-    public Minecraft mc = Minecraft.getMinecraft();
-
     public PacketData C0A = new PacketData();
     public PacketData C08 = new PacketData();
     public PacketData C07 = new PacketData();
@@ -30,43 +28,34 @@ public class PacketsHandler {
     public AtomicInteger serverSlot = new AtomicInteger(-1);
     private final boolean handleSlots = true;
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onSendPacket(SendPacketEvent e) {
-        if (e.isCanceled()) {
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
+    public void onSendPacket(SendPacketEvent event) {
+        if (event.isCanceled()) {
             return;
         }
-        Packet<?> packet = e.getPacket();
-        if (packet instanceof C02PacketUseEntity) {
+        Packet<?> packet = event.getPacket();
+        if (packet instanceof ServerboundInteractPacket) {
             if (C07.sentCurrentTick.get()) {
-                e.setCanceled(true);
+                event.setCanceled(true);
                 return;
             }
-            if (((C02PacketUseEntity) packet).getAction() == C02PacketUseEntity.Action.INTERACT_AT) {
-                C02_INTERACT_AT.sentCurrentTick.set(true);
-            }
             C02.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C08PacketPlayerBlockPlacement) {
+            C02_INTERACT_AT.sentCurrentTick.set(true);
+        } else if (packet instanceof net.minecraft.network.protocol.game.ServerboundUseItemOnPacket
+                || packet instanceof net.minecraft.network.protocol.game.ServerboundUseItemPacket) {
             C08.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C07PacketPlayerDigging) {
+        } else if (packet instanceof ServerboundPlayerActionPacket) {
             C07.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C0APacketAnimation) {
+        } else if (packet instanceof ServerboundSwingPacket) {
             if (C07.sentCurrentTick.get()) {
-                e.setCanceled(true);
+                event.setCanceled(true);
                 return;
             }
             C0A.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C09PacketHeldItemChange && handleSlots) {
-            C09PacketHeldItemChange slotPacket = (C09PacketHeldItemChange) packet;
-            int slotId = slotPacket.getSlotId();
+        } else if (packet instanceof ServerboundSetCarriedItemPacket slotPacket && handleSlots) {
+            int slotId = slotPacket.getSlot();
             if (slotId == playerSlot.get() && slotId == serverSlot.get()) {
-                if (Raven.debug) {
-                    Utils.sendMessage("&7bad packet detected (same slot): &b" + slotId);
-                }
-                e.setCanceled(true);
+                event.setCanceled(true);
                 return;
             }
             C09.sentCurrentTick.set(true);
@@ -76,25 +65,19 @@ public class PacketsHandler {
     }
 
     @SubscribeEvent
-    public void onReceivePacket(ReceivePacketEvent e) {
-        if (e.getPacket() instanceof S09PacketHeldItemChange && handleSlots) {
-            S09PacketHeldItemChange packet = (S09PacketHeldItemChange) e.getPacket();
-            int index = packet.getHeldItemHotbarIndex();
-            if (index >= 0 && index < InventoryPlayer.getHotbarSize()) {
+    public void onReceivePacket(ReceivePacketEvent event) {
+        if (event.getPacket() instanceof ClientboundSetHeldSlotPacket packet && handleSlots) {
+            int index = packet.slot();
+            if (index >= 0 && index < 9) {
                 serverSlot.set(index);
             }
-        }
-        else if (e.getPacket() instanceof S0CPacketSpawnPlayer && Minecraft.getMinecraft().thePlayer != null && handleSlots) {
-            S0CPacketSpawnPlayer packet = (S0CPacketSpawnPlayer) e.getPacket();
-            if (packet.getEntityID() != Minecraft.getMinecraft().thePlayer.getEntityId()) {
-                return;
-            }
+        } else if (event.getPacket() instanceof ClientboundLoginPacket && Mc.player() != null && handleSlots) {
             playerSlot.set(-1);
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void onPostUpdate(PostUpdateEvent e) {
+    @SubscribeEvent(priority = Integer.MAX_VALUE)
+    public void onPostUpdate(PostUpdateEvent event) {
         C08.updateStatesPostUpdate();
         C07.updateStatesPostUpdate();
         C02.updateStatesPostUpdate();
@@ -104,41 +87,36 @@ public class PacketsHandler {
     }
 
     public void handlePacket(Packet<?> packet) {
-        if (packet instanceof C09PacketHeldItemChange && handleSlots) {
-            int slotId = ((C09PacketHeldItemChange) packet).getSlotId();
-            this.playerSlot.set(slotId);
+        if (packet instanceof ServerboundSetCarriedItemPacket slotPacket && handleSlots) {
+            playerSlot.set(slotPacket.getSlot());
             C09.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C02PacketUseEntity) {
+        } else if (packet instanceof ServerboundInteractPacket) {
             C02.sentCurrentTick.set(true);
-            if (((C02PacketUseEntity) packet).getAction() == C02PacketUseEntity.Action.INTERACT_AT) {
-                C02_INTERACT_AT.sentCurrentTick.set(true);
-            }
-        }
-        else if (packet instanceof C07PacketPlayerDigging) {
+            C02_INTERACT_AT.sentCurrentTick.set(true);
+        } else if (packet instanceof ServerboundPlayerActionPacket) {
             C07.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C08PacketPlayerBlockPlacement) {
+        } else if (packet instanceof net.minecraft.network.protocol.game.ServerboundUseItemOnPacket
+                || packet instanceof net.minecraft.network.protocol.game.ServerboundUseItemPacket) {
             C08.sentCurrentTick.set(true);
-        }
-        else if (packet instanceof C0APacketAnimation) {
+        } else if (packet instanceof ServerboundSwingPacket) {
             C0A.sentCurrentTick.set(true);
         }
     }
 
     public boolean sent() {
-        return C02.sentCurrentTick.get() || C08.sentCurrentTick.get() || C09.sentCurrentTick.get() || C07.sentCurrentTick.get() || C0A.sentCurrentTick.get();
+        return C02.sentCurrentTick.get() || C08.sentCurrentTick.get() || C09.sentCurrentTick.get()
+                || C07.sentCurrentTick.get() || C0A.sentCurrentTick.get();
     }
 
     public boolean updateSlot(int slot) {
         if (!handleSlots) {
-            mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(slot));
+            Mc.player().connection.send(new ServerboundSetCarriedItemPacket(slot));
             return true;
         }
         if (playerSlot.get() == slot || slot == -1) {
             return false;
         }
-        mc.thePlayer.sendQueue.addToSendQueue(new C09PacketHeldItemChange(slot));
+        Mc.player().connection.send(new ServerboundSetCarriedItemPacket(slot));
         playerSlot.set(slot);
         return true;
     }

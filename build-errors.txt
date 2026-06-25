@@ -1,0 +1,1225 @@
+﻿To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.5.0/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+
+> Configure project :
+Fabric Loom: 1.17.12
+
+> Task :compileJava
+.\gradlew.bat : 
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\CategoryComponent.java:20: 
+error: cannot find symbol
+At C:\Users\Admin\AppData\Local\Temp\ps-script-308024cb-32e2-4d6f-8e23-4770e31c992b.ps1:79 char:42
++ ... uments\Raven-B21"; .\gradlew.bat compileJava --no-daemon 2>&1 | Out-F ...
++                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\Admin\...not find symbol:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+import net.minecraft.core.registries.RegistryKeys;
+                                    ^
+  symbol:   class RegistryKeys
+  location: package net.minecraft.core.registries
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\ClientChatReceivedEvent.java:6: error: cannot 
+find symbol
+    public Text message;
+           ^
+  symbol:   class Text
+  location: class ClientChatReceivedEvent
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\ClientChatReceivedEvent.java:8: error: cannot 
+find symbol
+    public ClientChatReceivedEvent(Text message) {
+                                   ^
+  symbol:   class Text
+  location: class ClientChatReceivedEvent
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\ClickGui.java:23: error: a type with the same 
+simple name is already defined by the single-type-import of Component
+import net.minecraft.network.chat.Component;
+^
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\BindComponent.java:12: error: 
+cannot find symbol
+import net.minecraft.util.Formatting;
+                         ^
+  symbol:   class Formatting
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\BindComponent.java:13: error: 
+package net.minecraft.client.util does not exist
+import net.minecraft.client.util.InputUtil;
+                                ^
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\GroupComponent.java:8: error: 
+cannot find symbol
+import net.minecraft.core.RotationAxis;
+                         ^
+  symbol:   class RotationAxis
+  location: package net.minecraft.core
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\SliderComponent.java:13: 
+error: cannot find symbol
+import net.minecraft.util.Formatting;
+                         ^
+  symbol:   class Formatting
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\CollisionEvent.java:10: error: cannot find symbol
+    public Box boundingBox;
+           ^
+  symbol:   class Box
+  location: class CollisionEvent
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\CollisionEvent.java:12: error: cannot find symbol
+    public CollisionEvent(BlockPos position, Block block, Box boundingBox) {
+                                                          ^
+  symbol:   class Box
+  location: class CollisionEvent
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\keystroke\KeyStrokeKeyRenderer.java:7: error: package 
+net.minecraft.client.util does not exist
+import net.minecraft.client.util.InputUtil;
+                                ^
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\keystroke\KeyStrokeRenderer.java:29: error: cannot find 
+symbol
+    private void onHudRender(GuiGraphics context, net.minecraft.client.renderer.RenderTickCounter tickCounter) {
+                                                                               ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:3: 
+error: cannot find symbol
+import net.minecraft.client.renderer.Camera;
+                                    ^
+  symbol:   class Camera
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:5: 
+error: cannot find symbol
+import net.minecraft.client.renderer.RenderTickCounter;
+                                    ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:6: 
+error: cannot find symbol
+import net.minecraft.resources.ResourceLocation;
+                              ^
+  symbol:   class ResourceLocation
+  location: package net.minecraft.resources
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:14: 
+error: cannot find symbol
+    void callSetupCameraTransform(RenderTickCounter tickCounter);
+                                  ^
+  symbol:   class RenderTickCounter
+  location: interface IAccessorGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:17: 
+error: cannot find symbol
+    void callLoadShader(ResourceLocation resourceLocation);
+                        ^
+  symbol:   class ResourceLocation
+  location: interface IAccessorGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:20: 
+error: cannot find symbol
+    ResourceLocation getPostProcessorId();
+    ^
+  symbol:   class ResourceLocation
+  location: interface IAccessorGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:32: 
+error: cannot find symbol
+    Camera getCamera();
+    ^
+  symbol:   class Camera
+  location: interface IAccessorGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorMinecraft.java:4: error: 
+cannot find symbol
+import net.minecraft.client.renderer.RenderTickCounter;
+                                    ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorMinecraft.java:12: error: 
+package RenderTickCounter does not exist
+    RenderTickCounter.Dynamic getRenderTickCounter();
+                     ^
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.ja
+va:5: error: cannot find symbol
+import net.minecraft.client.multiplayer.ClientPlayerInteractionManager;
+                                       ^
+  symbol:   class ClientPlayerInteractionManager
+  location: package net.minecraft.client.multiplayer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.ja
+va:8: error: cannot find symbol
+import net.minecraft.util.ActionResult;
+                         ^
+  symbol:   class ActionResult
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.ja
+va:9: error: cannot find symbol
+import net.minecraft.util.Hand;
+                         ^
+  symbol:   class Hand
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.ja
+va:18: error: cannot find symbol
+    private void onInteractItem(Player player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+                                               ^
+  symbol:   class Hand
+  location: class MixinClientPlayerInteractionManager
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.ja
+va:18: error: cannot find symbol
+    private void onInteractItem(Player player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+                                                                                 ^
+  symbol:   class ActionResult
+  location: class MixinClientPlayerInteractionManager
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:6: error: 
+cannot find symbol
+import net.minecraft.client.input.KeyboardInput;
+                                 ^
+  symbol:   class KeyboardInput
+  location: package net.minecraft.client.input
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:7: error: 
+cannot find symbol
+import net.minecraft.client.GameOptions;
+                           ^
+  symbol:   class GameOptions
+  location: package net.minecraft.client
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:8: error: 
+cannot find symbol
+import net.minecraft.util.PlayerInput;
+                         ^
+  symbol:   class PlayerInput
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:9: error: 
+cannot find symbol
+import net.minecraft.core.Vec2f;
+                         ^
+  symbol:   class Vec2f
+  location: package net.minecraft.core
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:22: error: 
+cannot find symbol
+    private GameOptions settings;
+            ^
+  symbol:   class GameOptions
+  location: class MixinKeyboardInput
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:25: error: 
+cannot find symbol
+    public Vec2f movementVector;
+           ^
+  symbol:   class Vec2f
+  location: class MixinKeyboardInput
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:28: error: 
+cannot find symbol
+    public PlayerInput playerInput;
+           ^
+  symbol:   class PlayerInput
+  location: class MixinKeyboardInput
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinMinecraft.java:10: error: cannot 
+find symbol
+import net.minecraft.world.entity.player.PlayerInventory;
+                                        ^
+  symbol:   class PlayerInventory
+  location: package net.minecraft.world.entity.player
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinMinecraft.java:37: error: cannot 
+find symbol
+    private void onChangeSelectedSlot(PlayerInventory inventory, int slot) {
+                                      ^
+  symbol:   class PlayerInventory
+  location: class MixinMinecraft
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\entity\MixinPlayer.java:4: error: cannot 
+find symbol
+import keystrokesmod.module.impl.combat.Reduce;
+                                       ^
+  symbol:   class Reduce
+  location: package keystrokesmod.module.impl.combat
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientConnection.java:9: error: 
+cannot find symbol
+import net.minecraft.network.ClientConnection;
+                            ^
+  symbol:   class ClientConnection
+  location: package net.minecraft.network
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:4:
+ error: cannot find symbol
+import net.minecraft.client.multiplayer.ClientPlayNetworkHandler;
+                                       ^
+  symbol:   class ClientPlayNetworkHandler
+  location: package net.minecraft.client.multiplayer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:5:
+ error: cannot find symbol
+import net.minecraft.network.protocol.game.PlayerPositionLookS2CPacket;
+                                          ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:14
+: error: cannot find symbol
+    private void onPlayerPositionLookPre(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+                                         ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: class MixinClientPlayNetworkHandler
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:21
+: error: cannot find symbol
+    private void onPlayerPositionLookPost(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+                                          ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: class MixinClientPlayNetworkHandler
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinEntityRenderDispatcher.java:6: 
+error: cannot find symbol
+import net.minecraft.client.renderer.entity.EntityRenderManager;
+                                           ^
+  symbol:   class EntityRenderManager
+  location: package net.minecraft.client.renderer.entity
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:6: error: 
+cannot find symbol
+import net.minecraft.client.renderer.Camera;
+                                    ^
+  symbol:   class Camera
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:34: error: 
+cannot find symbol
+    private float onClipToSpace(Camera camera, float desiredCameraDistance) {
+                                ^
+  symbol:   class Camera
+  location: class MixinGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:45: error: 
+cannot find symbol
+    private Vector4f onApplyFog(FogRenderer renderer, Camera camera, int viewDistance, 
+net.minecraft.client.renderer.RenderTickCounter tickCounter, float tickProgress, 
+net.minecraft.client.multiplayer.ClientLevel world) {
+                                                      ^
+  symbol:   class Camera
+  location: class MixinGameRenderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:45: error: 
+cannot find symbol
+    private Vector4f onApplyFog(FogRenderer renderer, Camera camera, int viewDistance, 
+net.minecraft.client.renderer.RenderTickCounter tickCounter, float tickProgress, 
+net.minecraft.client.multiplayer.ClientLevel world) {
+                                                                                                                    ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:51: error: 
+cannot find symbol
+    private void onRenderWorldPost(net.minecraft.client.renderer.RenderTickCounter tickCounter, CallbackInfo ci) {
+                                                                ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:56: error: 
+cannot find symbol
+    private void onRenderWorldPre(net.minecraft.client.renderer.RenderTickCounter tickCounter, CallbackInfo ci) {
+                                                               ^
+  symbol:   class RenderTickCounter
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinWorldRenderer.java:8: error: 
+cannot find symbol
+import net.minecraft.client.renderer.WorldRenderer;
+                                    ^
+  symbol:   class WorldRenderer
+  location: package net.minecraft.client.renderer
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:6: error: cannot find 
+symbol
+import net.minecraft.world.level.block.BlockState;
+                                      ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:10: error: cannot find 
+symbol
+import net.minecraft.world.phys.shapes.VoxelShapes;
+                                      ^
+  symbol:   class VoxelShapes
+  location: package net.minecraft.world.phys.shapes
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:11: error: cannot find 
+symbol
+import net.minecraft.world.BlockView;
+                          ^
+  symbol:   class BlockView
+  location: package net.minecraft.world
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot find 
+symbol
+    private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                     ^
+  symbol:   class BlockState
+  location: class MixinBlock
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot find 
+symbol
+    private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                                       ^
+  symbol:   class BlockView
+  location: class MixinBlock
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot find 
+symbol
+    private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                                                                                                     ^
+  symbol:   class ShapeContext
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\client\Settings.java:10: error: cannot find 
+symbol
+import net.minecraft.resources.ResourceLocation;
+                              ^
+  symbol:   class ResourceLocation
+  location: package net.minecraft.resources
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\client\Settings.java:35: error: cannot find 
+symbol
+    public static List<ResourceLocation> loadedCapes = new ArrayList<>();
+                       ^
+  symbol:   class ResourceLocation
+  location: class Settings
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\combat\AutoClicker.java:14: error: cannot 
+find symbol
+import net.minecraft.util.Hand;
+                         ^
+  symbol:   class Hand
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\combat\KillAura.java:14: error: cannot find 
+symbol
+import net.minecraft.util.Hand;
+                         ^
+  symbol:   class Hand
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\other\ViewPackets.java:13: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.PlayerMoveC2SPacket;
+                                          ^
+  symbol:   class PlayerMoveC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\AutoTool.java:8: error: cannot find 
+symbol
+import net.minecraft.world.level.block.BlockState;
+                                      ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\AutoTool.java:43: error: cannot find 
+symbol
+    private int findBestTool(BlockState state) {
+                             ^
+  symbol:   class BlockState
+  location: class AutoTool
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\NoFall.java:8: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.PlayerMoveC2SPacket;
+                                          ^
+  symbol:   class PlayerMoveC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:10: error: cannot find 
+symbol
+import net.minecraft.world.level.block.BlockState;
+                                      ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:12: error: cannot find 
+symbol
+import net.minecraft.util.ActionResult;
+                         ^
+  symbol:   class ActionResult
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:13: error: cannot find 
+symbol
+import net.minecraft.util.Hand;
+                         ^
+  symbol:   class Hand
+  location: package net.minecraft.util
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\render\ItemESP.java:9: error: cannot find 
+symbol
+import net.minecraft.world.entity.ItemEntity;
+                                 ^
+  symbol:   class ItemEntity
+  location: package net.minecraft.world.entity
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:7: error: cannot find symbol
+import net.minecraft.world.entity.player.PlayerInventory;
+                                        ^
+  symbol:   class PlayerInventory
+  location: package net.minecraft.world.entity.player
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:9: error: cannot find symbol
+import net.minecraft.network.protocol.game.HandSwingC2SPacket;
+                                          ^
+  symbol:   class HandSwingC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:10: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.PlayerActionC2SPacket;
+                                          ^
+  symbol:   class PlayerActionC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:11: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.PlayerInteractEntityC2SPacket;
+                                          ^
+  symbol:   class PlayerInteractEntityC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:12: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.UpdateSelectedSlotC2SPacket;
+                                          ^
+  symbol:   class UpdateSelectedSlotC2SPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:13: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.PlayerSpawnS2CPacket;
+                                          ^
+  symbol:   class PlayerSpawnS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:14: error: cannot find 
+symbol
+import net.minecraft.network.protocol.game.UpdateSelectedSlotS2CPacket;
+                                          ^
+  symbol:   class UpdateSelectedSlotS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:6: error: cannot find symbol
+import net.minecraft.world.level.block.entity.BlockEntityProvider;
+                                             ^
+  symbol:   class BlockEntityProvider
+  location: package net.minecraft.world.level.block.entity
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:8: error: cannot find symbol
+import net.minecraft.resources.ResourceLocation;
+                              ^
+  symbol:   class ResourceLocation
+  location: package net.minecraft.resources
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:12: error: cannot find symbol
+import net.minecraft.world.BlockView;
+                          ^
+  symbol:   class BlockView
+  location: package net.minecraft.world
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:31: error: cannot find symbol
+    public Block(net.minecraft.world.level.block.BlockState state, BlockPos blockPos) {
+                                                ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:55: error: cannot find symbol
+    private void fillFromBlock(net.minecraft.world.level.block.Block block, net.minecraft.world.level.block.BlockState 
+state, BlockPos blockPos) {
+                                                                                                           ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:71: error: cannot find symbol
+    private static net.minecraft.world.level.block.BlockState getState(BlockPos blockPos) {
+                                                  ^
+  symbol:   class BlockState
+  location: package net.minecraft.world.level.block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:78: error: cannot find symbol
+    private static BlockView getWorld() {
+                   ^
+  symbol:   class BlockView
+  location: class Block
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Vec3.java:5: error: Vec3 is already 
+defined in this compilation unit
+import net.minecraft.world.phys.Vec3;
+^
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Entity.java:10: error: cannot find symbol
+import net.minecraft.world.entity.projectile.FishingBobberEntity;
+                                            ^
+  symbol:   class FishingBobberEntity
+  location: package net.minecraft.world.entity.projectile
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Entity.java:12: error: cannot find symbol
+import net.minecraft.world.item.ItemEntity;
+                               ^
+  symbol:   class ItemEntity
+  location: package net.minecraft.world.item
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\ItemStack.java:12: error: cannot find 
+symbol
+import net.minecraft.resources.ResourceLocation;
+                              ^
+  symbol:   class ResourceLocation
+  location: package net.minecraft.resources
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:3: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.GameMessageS2CPacket;
+                                          ^
+  symbol:   class GameMessageS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:4: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.ChatMessageS2CPacket;
+                                          ^
+  symbol:   class ChatMessageS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:10: error: cannot 
+find symbol
+    public S02(GameMessageS2CPacket packet) {
+               ^
+  symbol:   class GameMessageS2CPacket
+  location: class S02
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:16: error: cannot 
+find symbol
+    public S02(ChatMessageS2CPacket packet) {
+               ^
+  symbol:   class ChatMessageS2CPacket
+  location: class S02
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S04.java:4: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.EntityEquipmentUpdateS2CPacket;
+                                          ^
+  symbol:   class EntityEquipmentUpdateS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S04.java:11: error: cannot 
+find symbol
+    public S04(EntityEquipmentUpdateS2CPacket packet) {
+               ^
+  symbol:   class EntityEquipmentUpdateS2CPacket
+  location: class S04
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S06.java:3: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.HealthUpdateS2CPacket;
+                                          ^
+  symbol:   class HealthUpdateS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S06.java:10: error: cannot 
+find symbol
+    public S06(HealthUpdateS2CPacket packet) {
+               ^
+  symbol:   class HealthUpdateS2CPacket
+  location: class S06
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:5: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.PlayerPositionLookS2CPacket;
+                                          ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:17: error: cannot 
+find symbol
+    public S08(PlayerPositionLookS2CPacket packet) {
+               ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: class S08
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:37: error: cannot 
+find symbol
+    private static PlayerPositionLookS2CPacket create(Vec3 position, float yaw, float pitch, Set<String> enumFlags) {
+                   ^
+  symbol:   class PlayerPositionLookS2CPacket
+  location: class S08
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S0B.java:3: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.EntityAnimationS2CPacket;
+                                          ^
+  symbol:   class EntityAnimationS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S0B.java:9: error: cannot 
+find symbol
+    public S0B(EntityAnimationS2CPacket packet) {
+               ^
+  symbol:   class EntityAnimationS2CPacket
+  location: class S0B
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S14.java:3: error: cannot 
+find symbol
+import net.minecraft.network.protocol.game.EntityS2CPacket;
+                                          ^
+  symbol:   class EntityS2CPacket
+  location: package net.minecraft.network.protocol.game
+C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S14.java:15: error: cannot 
+find symbol
+    public S14(EntityS2CPacket packet) {
+               ^
+  symbol:   class EntityS2CPacket
+  location: class S14
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+100 errors
+
+> Task :compileJava FAILED
+
+[Incubating] Problems report is available at: file:///C:/Users/Admin/Documents/Raven-B21/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava' (registered by plugin class 'org.gradle.api.plugins.JavaBasePlugin').
+> Compilation failed; see the compiler output below.
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\ClickGui.java:23: error: a type with the 
+same simple name is already defined by the single-type-import of Component
+  import net.minecraft.network.chat.Component;
+  ^
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Vec3.java:5: error: Vec3 is already 
+defined in this compilation unit
+  import net.minecraft.world.phys.Vec3;
+  ^
+  Note: Recompile with -Xlint:deprecation for details.
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\CategoryComponent.java:20: 
+error: cannot find symbol
+  import net.minecraft.core.registries.RegistryKeys;
+                                      ^
+    symbol:   class RegistryKeys
+    location: package net.minecraft.core.registries
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\ClientChatReceivedEvent.java:6: error: cannot 
+find symbol
+      public Text message;
+             ^
+    symbol:   class Text
+    location: class ClientChatReceivedEvent
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\ClientChatReceivedEvent.java:8: error: cannot 
+find symbol
+      public ClientChatReceivedEvent(Text message) {
+                                     ^
+    symbol:   class Text
+    location: class ClientChatReceivedEvent
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\BindComponent.java:12: 
+error: cannot find symbol
+  import net.minecraft.util.Formatting;
+                           ^
+    symbol:   class Formatting
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\GroupComponent.java:8: 
+error: cannot find symbol
+  import net.minecraft.core.RotationAxis;
+                           ^
+    symbol:   class RotationAxis
+    location: package net.minecraft.core
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\SliderComponent.java:13: 
+error: cannot find symbol
+  import net.minecraft.util.Formatting;
+                           ^
+    symbol:   class Formatting
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\CollisionEvent.java:10: error: cannot find 
+symbol
+      public Box boundingBox;
+             ^
+    symbol:   class Box
+    location: class CollisionEvent
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\event\CollisionEvent.java:12: error: cannot find 
+symbol
+      public CollisionEvent(BlockPos position, Block block, Box boundingBox) {
+                                                            ^
+    symbol:   class Box
+    location: class CollisionEvent
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\keystroke\KeyStrokeRenderer.java:29: error: cannot 
+find symbol
+      private void onHudRender(GuiGraphics context, net.minecraft.client.renderer.RenderTickCounter tickCounter) {
+                                                                                 ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:3: 
+error: cannot find symbol
+  import net.minecraft.client.renderer.Camera;
+                                      ^
+    symbol:   class Camera
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:5: 
+error: cannot find symbol
+  import net.minecraft.client.renderer.RenderTickCounter;
+                                      ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:6: 
+error: cannot find symbol
+  import net.minecraft.resources.ResourceLocation;
+                                ^
+    symbol:   class ResourceLocation
+    location: package net.minecraft.resources
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:14: 
+error: cannot find symbol
+      void callSetupCameraTransform(RenderTickCounter tickCounter);
+                                    ^
+    symbol:   class RenderTickCounter
+    location: interface IAccessorGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:17: 
+error: cannot find symbol
+      void callLoadShader(ResourceLocation resourceLocation);
+                          ^
+    symbol:   class ResourceLocation
+    location: interface IAccessorGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:20: 
+error: cannot find symbol
+      ResourceLocation getPostProcessorId();
+      ^
+    symbol:   class ResourceLocation
+    location: interface IAccessorGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorGameRenderer.java:32: 
+error: cannot find symbol
+      Camera getCamera();
+      ^
+    symbol:   class Camera
+    location: interface IAccessorGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorMinecraft.java:4: error: 
+cannot find symbol
+  import net.minecraft.client.renderer.RenderTickCounter;
+                                      ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.
+java:5: error: cannot find symbol
+  import net.minecraft.client.multiplayer.ClientPlayerInteractionManager;
+                                         ^
+    symbol:   class ClientPlayerInteractionManager
+    location: package net.minecraft.client.multiplayer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.
+java:8: error: cannot find symbol
+  import net.minecraft.util.ActionResult;
+                           ^
+    symbol:   class ActionResult
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.
+java:9: error: cannot find symbol
+  import net.minecraft.util.Hand;
+                           ^
+    symbol:   class Hand
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.
+java:18: error: cannot find symbol
+      private void onInteractItem(Player player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+                                                 ^
+    symbol:   class Hand
+    location: class MixinClientPlayerInteractionManager
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinClientPlayerInteractionManager.
+java:18: error: cannot find symbol
+      private void onInteractItem(Player player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+                                                                                   ^
+    symbol:   class ActionResult
+    location: class MixinClientPlayerInteractionManager
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:6: error: 
+cannot find symbol
+  import net.minecraft.client.input.KeyboardInput;
+                                   ^
+    symbol:   class KeyboardInput
+    location: package net.minecraft.client.input
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:7: error: 
+cannot find symbol
+  import net.minecraft.client.GameOptions;
+                             ^
+    symbol:   class GameOptions
+    location: package net.minecraft.client
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:8: error: 
+cannot find symbol
+  import net.minecraft.util.PlayerInput;
+                           ^
+    symbol:   class PlayerInput
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:9: error: 
+cannot find symbol
+  import net.minecraft.core.Vec2f;
+                           ^
+    symbol:   class Vec2f
+    location: package net.minecraft.core
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:22: error: 
+cannot find symbol
+      private GameOptions settings;
+              ^
+    symbol:   class GameOptions
+    location: class MixinKeyboardInput
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:25: error: 
+cannot find symbol
+      public Vec2f movementVector;
+             ^
+    symbol:   class Vec2f
+    location: class MixinKeyboardInput
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinKeyboardInput.java:28: error: 
+cannot find symbol
+      public PlayerInput playerInput;
+             ^
+    symbol:   class PlayerInput
+    location: class MixinKeyboardInput
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinMinecraft.java:10: error: 
+cannot find symbol
+  import net.minecraft.world.entity.player.PlayerInventory;
+                                          ^
+    symbol:   class PlayerInventory
+    location: package net.minecraft.world.entity.player
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\client\MixinMinecraft.java:37: error: 
+cannot find symbol
+      private void onChangeSelectedSlot(PlayerInventory inventory, int slot) {
+                                        ^
+    symbol:   class PlayerInventory
+    location: class MixinMinecraft
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\entity\MixinPlayer.java:4: error: cannot 
+find symbol
+  import keystrokesmod.module.impl.combat.Reduce;
+                                         ^
+    symbol:   class Reduce
+    location: package keystrokesmod.module.impl.combat
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientConnection.java:9: 
+error: cannot find symbol
+  import net.minecraft.network.ClientConnection;
+                              ^
+    symbol:   class ClientConnection
+    location: package net.minecraft.network
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:
+4: error: cannot find symbol
+  import net.minecraft.client.multiplayer.ClientPlayNetworkHandler;
+                                         ^
+    symbol:   class ClientPlayNetworkHandler
+    location: package net.minecraft.client.multiplayer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:
+5: error: cannot find symbol
+  import net.minecraft.network.protocol.game.PlayerPositionLookS2CPacket;
+                                            ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:
+14: error: cannot find symbol
+      private void onPlayerPositionLookPre(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+                                           ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: class MixinClientPlayNetworkHandler
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\network\MixinClientPlayNetworkHandler.java:
+21: error: cannot find symbol
+      private void onPlayerPositionLookPost(PlayerPositionLookS2CPacket packet, CallbackInfo ci) {
+                                            ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: class MixinClientPlayNetworkHandler
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinEntityRenderDispatcher.java:6: 
+error: cannot find symbol
+  import net.minecraft.client.renderer.entity.EntityRenderManager;
+                                             ^
+    symbol:   class EntityRenderManager
+    location: package net.minecraft.client.renderer.entity
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:6: error: 
+cannot find symbol
+  import net.minecraft.client.renderer.Camera;
+                                      ^
+    symbol:   class Camera
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:34: error: 
+cannot find symbol
+      private float onClipToSpace(Camera camera, float desiredCameraDistance) {
+                                  ^
+    symbol:   class Camera
+    location: class MixinGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:45: error: 
+cannot find symbol
+      private Vector4f onApplyFog(FogRenderer renderer, Camera camera, int viewDistance, 
+net.minecraft.client.renderer.RenderTickCounter tickCounter, float tickProgress, 
+net.minecraft.client.multiplayer.ClientLevel world) {
+                                                        ^
+    symbol:   class Camera
+    location: class MixinGameRenderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:45: error: 
+cannot find symbol
+      private Vector4f onApplyFog(FogRenderer renderer, Camera camera, int viewDistance, 
+net.minecraft.client.renderer.RenderTickCounter tickCounter, float tickProgress, 
+net.minecraft.client.multiplayer.ClientLevel world) {
+                                                                                                                      ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:51: error: 
+cannot find symbol
+      private void onRenderWorldPost(net.minecraft.client.renderer.RenderTickCounter tickCounter, CallbackInfo ci) {
+                                                                  ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinGameRenderer.java:56: error: 
+cannot find symbol
+      private void onRenderWorldPre(net.minecraft.client.renderer.RenderTickCounter tickCounter, CallbackInfo ci) {
+                                                                 ^
+    symbol:   class RenderTickCounter
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\render\MixinWorldRenderer.java:8: error: 
+cannot find symbol
+  import net.minecraft.client.renderer.WorldRenderer;
+                                      ^
+    symbol:   class WorldRenderer
+    location: package net.minecraft.client.renderer
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:6: error: cannot 
+find symbol
+  import net.minecraft.world.level.block.BlockState;
+                                        ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:10: error: cannot 
+find symbol
+  import net.minecraft.world.phys.shapes.VoxelShapes;
+                                        ^
+    symbol:   class VoxelShapes
+    location: package net.minecraft.world.phys.shapes
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:11: error: cannot 
+find symbol
+  import net.minecraft.world.BlockView;
+                            ^
+    symbol:   class BlockView
+    location: package net.minecraft.world
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot 
+find symbol
+      private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                       ^
+    symbol:   class BlockState
+    location: class MixinBlock
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot 
+find symbol
+      private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                                         ^
+    symbol:   class BlockView
+    location: class MixinBlock
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\world\MixinBlock.java:20: error: cannot 
+find symbol
+      private void onGetCollisionShape(BlockState state, BlockView world, BlockPos pos, 
+net.minecraft.world.level.block.ShapeContext context, CallbackInfoReturnable<VoxelShape> cir) {
+                                                                                                                       
+^
+    symbol:   class ShapeContext
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\client\Settings.java:10: error: cannot 
+find symbol
+  import net.minecraft.resources.ResourceLocation;
+                                ^
+    symbol:   class ResourceLocation
+    location: package net.minecraft.resources
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\client\Settings.java:35: error: cannot 
+find symbol
+      public static List<ResourceLocation> loadedCapes = new ArrayList<>();
+                         ^
+    symbol:   class ResourceLocation
+    location: class Settings
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\combat\AutoClicker.java:14: error: cannot 
+find symbol
+  import net.minecraft.util.Hand;
+                           ^
+    symbol:   class Hand
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\combat\KillAura.java:14: error: cannot 
+find symbol
+  import net.minecraft.util.Hand;
+                           ^
+    symbol:   class Hand
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\other\ViewPackets.java:13: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.PlayerMoveC2SPacket;
+                                            ^
+    symbol:   class PlayerMoveC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\AutoTool.java:8: error: cannot 
+find symbol
+  import net.minecraft.world.level.block.BlockState;
+                                        ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\AutoTool.java:43: error: cannot 
+find symbol
+      private int findBestTool(BlockState state) {
+                               ^
+    symbol:   class BlockState
+    location: class AutoTool
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\NoFall.java:8: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.PlayerMoveC2SPacket;
+                                            ^
+    symbol:   class PlayerMoveC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:10: error: cannot 
+find symbol
+  import net.minecraft.world.level.block.BlockState;
+                                        ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:12: error: cannot 
+find symbol
+  import net.minecraft.util.ActionResult;
+                           ^
+    symbol:   class ActionResult
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\player\Scaffold.java:13: error: cannot 
+find symbol
+  import net.minecraft.util.Hand;
+                           ^
+    symbol:   class Hand
+    location: package net.minecraft.util
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\module\impl\render\ItemESP.java:9: error: cannot find 
+symbol
+  import net.minecraft.world.entity.ItemEntity;
+                                   ^
+    symbol:   class ItemEntity
+    location: package net.minecraft.world.entity
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:7: error: cannot find 
+symbol
+  import net.minecraft.world.entity.player.PlayerInventory;
+                                          ^
+    symbol:   class PlayerInventory
+    location: package net.minecraft.world.entity.player
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:9: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.HandSwingC2SPacket;
+                                            ^
+    symbol:   class HandSwingC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:10: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.PlayerActionC2SPacket;
+                                            ^
+    symbol:   class PlayerActionC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:11: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.PlayerInteractEntityC2SPacket;
+                                            ^
+    symbol:   class PlayerInteractEntityC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:12: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.UpdateSelectedSlotC2SPacket;
+                                            ^
+    symbol:   class UpdateSelectedSlotC2SPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:13: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.PlayerSpawnS2CPacket;
+                                            ^
+    symbol:   class PlayerSpawnS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\utility\PacketsHandler.java:14: error: cannot find 
+symbol
+  import net.minecraft.network.protocol.game.UpdateSelectedSlotS2CPacket;
+                                            ^
+    symbol:   class UpdateSelectedSlotS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:6: error: cannot find symbol
+  import net.minecraft.world.level.block.entity.BlockEntityProvider;
+                                               ^
+    symbol:   class BlockEntityProvider
+    location: package net.minecraft.world.level.block.entity
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:8: error: cannot find symbol
+  import net.minecraft.resources.ResourceLocation;
+                                ^
+    symbol:   class ResourceLocation
+    location: package net.minecraft.resources
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:12: error: cannot find 
+symbol
+  import net.minecraft.world.BlockView;
+                            ^
+    symbol:   class BlockView
+    location: package net.minecraft.world
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:31: error: cannot find 
+symbol
+      public Block(net.minecraft.world.level.block.BlockState state, BlockPos blockPos) {
+                                                  ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:55: error: cannot find 
+symbol
+      private void fillFromBlock(net.minecraft.world.level.block.Block block, 
+net.minecraft.world.level.block.BlockState state, BlockPos blockPos) {
+                                                                                                             ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:71: error: cannot find 
+symbol
+      private static net.minecraft.world.level.block.BlockState getState(BlockPos blockPos) {
+                                                    ^
+    symbol:   class BlockState
+    location: package net.minecraft.world.level.block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Block.java:78: error: cannot find 
+symbol
+      private static BlockView getWorld() {
+                     ^
+    symbol:   class BlockView
+    location: class Block
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Entity.java:10: error: cannot find 
+symbol
+  import net.minecraft.world.entity.projectile.FishingBobberEntity;
+                                              ^
+    symbol:   class FishingBobberEntity
+    location: package net.minecraft.world.entity.projectile
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\Entity.java:12: error: cannot find 
+symbol
+  import net.minecraft.world.item.ItemEntity;
+                                 ^
+    symbol:   class ItemEntity
+    location: package net.minecraft.world.item
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\classes\ItemStack.java:12: error: cannot find 
+symbol
+  import net.minecraft.resources.ResourceLocation;
+                                ^
+    symbol:   class ResourceLocation
+    location: package net.minecraft.resources
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:3: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.GameMessageS2CPacket;
+                                            ^
+    symbol:   class GameMessageS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:4: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.ChatMessageS2CPacket;
+                                            ^
+    symbol:   class ChatMessageS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:10: error: cannot 
+find symbol
+      public S02(GameMessageS2CPacket packet) {
+                 ^
+    symbol:   class GameMessageS2CPacket
+    location: class S02
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S02.java:16: error: cannot 
+find symbol
+      public S02(ChatMessageS2CPacket packet) {
+                 ^
+1 actionable task: 1 executed
+    symbol:   class ChatMessageS2CPacket
+    location: class S02
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S04.java:4: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.EntityEquipmentUpdateS2CPacket;
+                                            ^
+    symbol:   class EntityEquipmentUpdateS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S04.java:11: error: cannot 
+find symbol
+      public S04(EntityEquipmentUpdateS2CPacket packet) {
+                 ^
+    symbol:   class EntityEquipmentUpdateS2CPacket
+    location: class S04
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S06.java:3: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.HealthUpdateS2CPacket;
+                                            ^
+    symbol:   class HealthUpdateS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S06.java:10: error: cannot 
+find symbol
+      public S06(HealthUpdateS2CPacket packet) {
+                 ^
+    symbol:   class HealthUpdateS2CPacket
+    location: class S06
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:5: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.PlayerPositionLookS2CPacket;
+                                            ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:17: error: cannot 
+find symbol
+      public S08(PlayerPositionLookS2CPacket packet) {
+                 ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: class S08
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S08.java:37: error: cannot 
+find symbol
+      private static PlayerPositionLookS2CPacket create(Vec3 position, float yaw, float pitch, Set<String> enumFlags) {
+                     ^
+    symbol:   class PlayerPositionLookS2CPacket
+    location: class S08
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S0B.java:3: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.EntityAnimationS2CPacket;
+                                            ^
+    symbol:   class EntityAnimationS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S0B.java:9: error: cannot 
+find symbol
+      public S0B(EntityAnimationS2CPacket packet) {
+                 ^
+    symbol:   class EntityAnimationS2CPacket
+    location: class S0B
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S14.java:3: error: cannot 
+find symbol
+  import net.minecraft.network.protocol.game.EntityS2CPacket;
+                                            ^
+    symbol:   class EntityS2CPacket
+    location: package net.minecraft.network.protocol.game
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\script\packets\clientbound\S14.java:15: error: cannot 
+find symbol
+      public S14(EntityS2CPacket packet) {
+                 ^
+    symbol:   class EntityS2CPacket
+    location: class S14
+  Note: Recompile with -Xlint:unchecked for details.
+  Note: Some input files use or override a deprecated API.
+  Note: Some messages have been simplified; recompile with -Xdiags:verbose to get full output
+  Note: Some input files use unchecked or unsafe operations.
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\clickgui\components\impl\BindComponent.java:13: 
+error: package net.minecraft.client.util does not exist
+  import net.minecraft.client.util.InputUtil;
+                                  ^
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\keystroke\KeyStrokeKeyRenderer.java:7: error: package 
+net.minecraft.client.util does not exist
+  import net.minecraft.client.util.InputUtil;
+                                  ^
+  C:\Users\Admin\Documents\Raven-B21\src\main\java\keystrokesmod\mixin\impl\accessor\IAccessorMinecraft.java:12: 
+error: package RenderTickCounter does not exist
+      RenderTickCounter.Dynamic getRenderTickCounter();
+                       ^
+  100 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 1m 27s

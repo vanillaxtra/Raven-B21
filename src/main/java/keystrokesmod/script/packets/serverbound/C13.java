@@ -1,7 +1,6 @@
 package keystrokesmod.script.packets.serverbound;
 
-import net.minecraft.entity.player.PlayerCapabilities;
-import net.minecraft.network.play.client.C13PacketPlayerAbilities;
+import net.minecraft.network.protocol.game.ServerboundPlayerAbilitiesPacket;
 
 public class C13 extends CPacket {
     public boolean invulnerable;
@@ -21,19 +20,21 @@ public class C13 extends CPacket {
         this.walkSpeed = walkSpeed;
     }
 
-    public C13(C13PacketPlayerAbilities packet) {
+    public C13(ServerboundPlayerAbilitiesPacket packet) {
         super(packet);
+        this.invulnerable = false;
+        this.flying = false;
+        this.allowFlying = false;
+        this.creativeMode = false;
+        this.flySpeed = 0;
+        this.walkSpeed = 0;
     }
 
     @Override
-    public C13PacketPlayerAbilities convert() {
-        PlayerCapabilities capabilities = new PlayerCapabilities();
-        capabilities.disableDamage = this.invulnerable;
-        capabilities.isFlying = this.flying;
-        capabilities.allowFlying = this.allowFlying;
-        capabilities.isCreativeMode = this.creativeMode;
-        capabilities.setFlySpeed(this.flySpeed);
-        capabilities.setPlayerWalkSpeed(this.walkSpeed);
-        return new C13PacketPlayerAbilities(capabilities);
+    public ServerboundPlayerAbilitiesPacket convert() {
+        if (this.packet instanceof ServerboundPlayerAbilitiesPacket abilitiesPacket) {
+            return abilitiesPacket;
+        }
+        return new ServerboundPlayerAbilitiesPacket(this.invulnerable, this.flying, this.allowFlying, this.creativeMode, this.flySpeed, this.walkSpeed);
     }
 }

@@ -1,53 +1,43 @@
 package keystrokesmod.module.impl.render;
 
+import keystrokesmod.event.RenderWorldLastEvent;
+import keystrokesmod.event.SubscribeEvent;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.RenderUtils;
 import keystrokesmod.utility.Utils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityEnderChest;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.awt.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 
 public class ChestESP extends Module {
-    private SliderSetting red, green, blue;
-    private ButtonSetting rainbow, outline, shade, disableIfOpened;
+    private SliderSetting red;
+    private SliderSetting green;
+    private SliderSetting blue;
+    private ButtonSetting rainbow;
+    private ButtonSetting outline;
+    private ButtonSetting shade;
 
     public ChestESP() {
-        super("ChestESP", Module.category.render, 0);
-        this.registerSetting(red = new SliderSetting("Red", 0.0D, 0.0D, 255.0D, 1.0D));
-        this.registerSetting(green = new SliderSetting("Green", 0.0D, 0.0D, 255.0D, 1.0D));
-        this.registerSetting(blue = new SliderSetting("Blue", 255.0D, 0.0D, 255.0D, 1.0D));
+        super("ChestESP", category.render, 0);
+        this.registerSetting(red = new SliderSetting("Red", 255, 0, 255, 1));
+        this.registerSetting(green = new SliderSetting("Green", 165, 0, 255, 1));
+        this.registerSetting(blue = new SliderSetting("Blue", 0, 0, 255, 1));
         this.registerSetting(rainbow = new ButtonSetting("Rainbow", false));
-        this.registerSetting(outline = new ButtonSetting("Outline", false));
-        this.registerSetting(shade = new ButtonSetting("Shade", false));
-        this.registerSetting(disableIfOpened = new ButtonSetting("Disable if opened", false));
+        this.registerSetting(outline = new ButtonSetting("Outline", true));
+        this.registerSetting(shade = new ButtonSetting("Shade", true));
     }
 
     @SubscribeEvent
-    public void o(RenderWorldLastEvent ev) {
-        if (!Utils.nullCheck()) {
+    public void onRender(RenderWorldLastEvent e) {
+        if (!Mc.nullCheck()) {
             return;
         }
-        int rgb = rainbow.isToggled() ? Utils.getChroma(2L, 0L) : (new Color((int) red.getInput(), (int) green.getInput(), (int) blue.getInput())).getRGB();
-        for (TileEntity tileEntity : mc.theWorld.loadedTileEntityList) {
-            if (tileEntity instanceof TileEntityChest) {
-                if (disableIfOpened.isToggled() && ((TileEntityChest) tileEntity).lidAngle > 0.0f) {
-                    continue;
-                }
-                RenderUtils.renderChest(tileEntity.getPos(), rgb, outline.isToggled(), shade.isToggled());
-            } else {
-                if (!(tileEntity instanceof TileEntityEnderChest)) {
-                    continue;
-                }
-                if (disableIfOpened.isToggled() && ((TileEntityEnderChest) tileEntity).lidAngle > 0.0f) {
-                    continue;
-                }
-                RenderUtils.renderChest(tileEntity.getPos(), rgb, outline.isToggled(), shade.isToggled());
+        int rgb = rainbow.isToggled() ? Utils.getChroma(2L, 0L) : ((int) red.getInput() << 16) | ((int) green.getInput() << 8) | (int) blue.getInput();
+        for (BlockEntity be : Utils.getLoadedBlockEntities()) {
+            if (be instanceof ChestBlockEntity) {
+                RenderUtils.renderChest(be.getBlockPos(), rgb, outline.isToggled(), shade.isToggled());
             }
         }
     }

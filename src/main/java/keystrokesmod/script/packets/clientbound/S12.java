@@ -1,21 +1,20 @@
 package keystrokesmod.script.packets.clientbound;
 
-import keystrokesmod.script.classes.Vec3;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
+import keystrokesmod.script.classes.ScriptVec3;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 
 public class S12 extends SPacket {
     public int entityId;
-    public Vec3 motion;
+    public ScriptVec3 motion;
 
-    public S12(S12PacketEntityVelocity packet) {
+    public S12(ClientboundSetEntityMotionPacket packet) {
         super(packet);
-        this.entityId = packet.getEntityID();
-        this.motion = new Vec3(packet.getMotionX(), packet.getMotionY(), packet.getMotionZ());
+        this.entityId = packet.getId();
+        this.motion = new ScriptVec3(0, 0, 0);
     }
 
-    public S12(int entityId, Vec3 motion) {
-        super(new S12PacketEntityVelocity(entityId, motion.x, motion.y, motion.z));
+    public S12(int entityId, ScriptVec3 motion) {
+        super(new ClientboundSetEntityMotionPacket(entityId, new net.minecraft.world.phys.Vec3(0, 0, 0)));
         this.entityId = entityId;
         this.motion = motion;
     }

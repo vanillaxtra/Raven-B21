@@ -1,5 +1,6 @@
 package keystrokesmod.utility.command.impl;
 
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
 import keystrokesmod.utility.command.Command;
 
@@ -13,7 +14,8 @@ public class Name extends Command {
         if (!Utils.nullCheck()) {
             return;
         }
-        Utils.addToClipboard(mc.thePlayer.getName());
-        chatWithPrefix("&7Copied &b" + mc.thePlayer.getName() + " &7to clipboard");
+        String name = Mc.player().getGameProfile().name();
+        Utils.addToClipboard(name);
+        chatWithPrefix("&7Copied &b" + name + " &7to clipboard");
     }
 }

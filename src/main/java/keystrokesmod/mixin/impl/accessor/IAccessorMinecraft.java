@@ -1,31 +1,31 @@
 package keystrokesmod.mixin.impl.accessor;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.Timer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@SideOnly(Side.CLIENT)
 @Mixin(Minecraft.class)
 public interface IAccessorMinecraft {
-    @Accessor("timer")
-    Timer getTimer();
+    @Accessor("deltaTracker")
+    DeltaTracker.Timer getDeltaTracker();
 
-    @Accessor("rightClickDelayTimer")
-    int getRightClickDelayTimer();
+    @Accessor("rightClickDelay")
+    int getRightClickDelay();
 
-    @Accessor("rightClickDelayTimer")
-    void setRightClickDelayTimer(int delay);
+    @Accessor("rightClickDelay")
+    void setRightClickDelay(int delay);
 
-    @Accessor("leftClickCounter")
-    void setLeftClickCounter(int delay);
+    @Accessor("missTime")
+    int getMissTime();
 
-    @Invoker("rightClickMouse")
-    void callRightClickMouse();
+    @Accessor("missTime")
+    void setMissTime(int delay);
 
-    @Invoker("clickMouse")
-    void callClickMouse();
+    @Invoker("startUseItem")
+    void callStartUseItem();
+
+    @Invoker("startAttack")
+    boolean callStartAttack();
 }

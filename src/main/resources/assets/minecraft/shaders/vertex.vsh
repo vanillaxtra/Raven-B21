@@ -1,6 +1,13 @@
-#version 120
+#version 150 core
+
+in vec3 Position;
+in vec2 UV0;
+
+uniform mat4 ProjMat;
+
+out vec2 texCoord;
 
 void main() {
-    gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_Position = ProjMat * vec4(Position, 1.0);
+    texCoord = UV0;
 }

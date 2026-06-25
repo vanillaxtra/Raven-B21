@@ -5,6 +5,7 @@ import keystrokesmod.Raven;
 import keystrokesmod.clickgui.ClickGui;
 import keystrokesmod.clickgui.components.impl.CategoryComponent;
 import keystrokesmod.event.PostProfileLoadEvent;
+import keystrokesmod.event.RavenEventBus;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.ModuleManager;
 import keystrokesmod.module.impl.client.Gui;
@@ -17,9 +18,8 @@ import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.KeySetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
 import keystrokesmod.script.Manager;
+import keystrokesmod.utility.Mc;
 import keystrokesmod.utility.Utils;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
 import java.io.FileReader;
@@ -30,12 +30,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ProfileManager {
-    public static Minecraft mc = Minecraft.getMinecraft();
     public File directory;
     public List<Profile> profiles = new ArrayList<>();
 
     public ProfileManager() {
-        directory = new File(mc.mcDataDir + File.separator + "keystrokes", "profiles");
+        directory = new File(new File(Mc.mc().gameDirectory, "keystrokes"), "profiles");
         if (!directory.exists()) {
             boolean success = directory.mkdirs();
             if (!success) {
@@ -43,7 +42,8 @@ public class ProfileManager {
                 return;
             }
         }
-        if (directory.listFiles().length == 0) { // if theres no profile in the folder upon launch, create new default profile
+        File[] existingFiles = directory.listFiles();
+        if (existingFiles == null || existingFiles.length == 0) { // if theres no profile in the folder upon launch, create new default profile
             saveProfile(new Profile("default", 0));
         }
     }
@@ -87,8 +87,8 @@ public class ProfileManager {
             moduleInformation.addProperty("keybind", module.getKeycode());
         }
         if (module instanceof HUD) {
-            moduleInformation.addProperty("posX", HUD.posX);
-            moduleInformation.addProperty("posY", HUD.posY);
+            moduleInformation.addProperty("posX", ModuleManager.hud.posX);
+            moduleInformation.addProperty("posY", ModuleManager.hud.posY);
         }
         else if (module instanceof TargetHUD) {
             moduleInformation.addProperty("posX", ModuleManager.targetHUD.posX);
@@ -198,11 +198,11 @@ public class ProfileManager {
                     if (module.getName().equals("HUD")) {
                         if (moduleInformation.has("posX")) {
                             int hudX = moduleInformation.get("posX").getAsInt();
-                            HUD.posX = hudX;
+                            ModuleManager.hud.posX = hudX;
                         }
                         if (moduleInformation.has("posY")) {
                             int hudY = moduleInformation.get("posY").getAsInt();
-                            HUD.posY = hudY;
+                            ModuleManager.hud.posY = hudY;
                         }
                     }
                     else if (module.getName().equals("TargetHUD")) {
@@ -261,7 +261,7 @@ public class ProfileManager {
 
                     Raven.currentProfile = getProfile(name);
                 }
-                MinecraftForge.EVENT_BUS.post(new PostProfileLoadEvent(Raven.currentProfile.getName()));
+                RavenEventBus.post(new PostProfileLoadEvent(Raven.currentProfile.getName()));
             }
             catch (Exception e) {
                 failedMessage("load", name);
