@@ -15,25 +15,25 @@ public class C03 extends CPacket {
     }
 
     public C03(boolean ground) {
-        super(new ServerboundMovePlayerPacket.StatusOnly(ground));
+        super(new ServerboundMovePlayerPacket.StatusOnly(ground, false));
         this.ground = ground;
     }
 
     public C03(ScriptVec3 position, boolean ground) {
-        super(new ServerboundMovePlayerPacket.Pos(position.x, position.y, position.z, ground));
+        super(new ServerboundMovePlayerPacket.Pos(position.x, position.y, position.z, ground, false));
         this.position = position;
         this.ground = ground;
     }
 
     public C03(float yaw, float pitch, boolean ground) {
-        super(new ServerboundMovePlayerPacket.Rot(yaw, pitch, ground));
+        super(new ServerboundMovePlayerPacket.Rot(yaw, pitch, ground, false));
         this.yaw = yaw;
         this.pitch = pitch;
         this.ground = ground;
     }
 
     public C03(ScriptVec3 position, float yaw, float pitch, boolean ground) {
-        super(new ServerboundMovePlayerPacket.PosRot(position.x, position.y, position.z, yaw, pitch, ground));
+        super(new ServerboundMovePlayerPacket.PosRot(position.x, position.y, position.z, yaw, pitch, ground, false));
         this.position = position;
         this.yaw = yaw;
         this.pitch = pitch;

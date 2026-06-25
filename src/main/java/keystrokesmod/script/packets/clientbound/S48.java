@@ -15,7 +15,7 @@ public class S48 extends SPacket {
     }
 
     public S48(String url, String hash) {
-        super(new ClientboundResourcePackPushPacket(UUID.randomUUID(), url, hash, false, net.minecraft.network.chat.Component.empty(), 0));
+        super(new ClientboundResourcePackPushPacket(UUID.randomUUID(), url, hash, false, java.util.Optional.empty()));
         this.url = url;
         this.hash = hash;
     }

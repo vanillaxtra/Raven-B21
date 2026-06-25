@@ -1,4 +1,4 @@
-﻿package keystrokesmod.script;
+package keystrokesmod.script;
 
 import keystrokesmod.Raven;
 import keystrokesmod.module.Module;

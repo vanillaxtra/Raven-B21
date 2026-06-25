@@ -25,7 +25,7 @@ public class S14 extends SPacket {
     }
 
     public S14(int entityId, byte posX, byte posY, byte posZ, byte yaw, byte pitch, boolean onGround) {
-        super(packet);
+        super(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(entityId, new net.minecraft.world.phys.Vec3(0, 0, 0)));
         this.entityId = entityId;
         this.posX = posX;
         this.posY = posY;
@@ -36,7 +36,7 @@ public class S14 extends SPacket {
     }
 
     public S14(int entityId, byte posX, byte posY, byte posZ, boolean onGround) {
-        super(packet);
+        super(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(entityId, new net.minecraft.world.phys.Vec3(0, 0, 0)));
         this.entityId = entityId;
         this.posX = posX;
         this.posY = posY;
@@ -45,7 +45,7 @@ public class S14 extends SPacket {
     }
 
     public S14(int entityId, byte yaw, byte pitch, boolean onGround) {
-        super(packet);
+        super(new net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket(entityId, new net.minecraft.world.phys.Vec3(0, 0, 0)));
         this.entityId = entityId;
         this.yaw = yaw;
         this.pitch = pitch;

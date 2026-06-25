@@ -76,6 +76,20 @@ public class Scaffold extends Module {
         return -1;
     }
 
+    public int totalBlocks() {
+        if (!Mc.nullCheck()) {
+            return 0;
+        }
+        int count = 0;
+        for (int i = 0; i < 9; i++) {
+            var stack = mc.player.getInventory().getItem(i);
+            if (stack.getItem() instanceof BlockItem) {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
     public void onDisable() {
         isEnabled = false;
     }

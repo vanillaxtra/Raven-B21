@@ -141,7 +141,7 @@ public final class RenderUtils {
     }
 
     public static Color interpolateColorC(Color color1, Color color2, float amount) {
-        return new Color();
+        return new Color(0, 0, 0);
     }
 
     public static int interpolateInt(int oldValue, int newValue, double interpolationValue) {

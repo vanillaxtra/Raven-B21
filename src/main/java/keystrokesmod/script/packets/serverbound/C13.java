@@ -35,6 +35,6 @@ public class C13 extends CPacket {
         if (this.packet instanceof ServerboundPlayerAbilitiesPacket abilitiesPacket) {
             return abilitiesPacket;
         }
-        return new ServerboundPlayerAbilitiesPacket(this.invulnerable, this.flying, this.allowFlying, this.creativeMode, this.flySpeed, this.walkSpeed);
+        return new ServerboundPlayerAbilitiesPacket(new net.minecraft.world.entity.player.Abilities());
     }
 }

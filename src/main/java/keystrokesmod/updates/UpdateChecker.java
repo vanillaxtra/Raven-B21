@@ -64,9 +64,6 @@ public class UpdateChecker {
         if (client.player == null || !updateAvailable) {
             return;
         }
-        if (!client.player.hasPermissions(2)) {
-            return;
-        }
         UUID id = client.player.getUUID();
         LocalDate today = LocalDate.now();
         notifiedPlayers.entrySet().removeIf(e -> e.getValue().isBefore(today));

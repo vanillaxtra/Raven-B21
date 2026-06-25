@@ -21,7 +21,7 @@ public class S27 extends SPacket {
     }
 
     public S27(float strength, ScriptVec3 position, ScriptVec3 motion, List<ScriptVec3> affectedBlockPositions) {
-        super(new ClientboundExplodePacket(position.x, position.y, position.z, strength, List.of(), motion.x, motion.y, motion.z));
+        super(new ClientboundExplodePacket(new net.minecraft.world.phys.Vec3(0, 0, 0), 0, 0, java.util.Optional.empty(), net.minecraft.core.particles.ParticleTypes.EXPLOSION, net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE, net.minecraft.util.random.WeightedList.of()));
         this.strength = strength;
         this.position = position;
         this.motion = motion;
